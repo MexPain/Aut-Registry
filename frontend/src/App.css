@@ -1,0 +1,7 @@
+.navbar-custom {
+    background-color: #b60f0f;
+}
+
+#responsive-navbar-nav a:hover{
+    background-color: #a46060;
+}
