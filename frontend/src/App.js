@@ -6,6 +6,7 @@ import Home from "./components/Home";
 import UserProfile from "./components/UserProfile";
 import Register from "./components/Register";
 import Login from "./components/Login";
+import About from "./components/About";
 
 const App = () => {
 
@@ -15,6 +16,7 @@ const App = () => {
             <Routes>
                 <Route path="/" element={<Home />}/>
                 <Route path="/home" element={<Home />}/>
+                <Route path="/about" element={<About />}/>
                 <Route path="/profile" element={<UserProfile />}/>
                 <Route path="/register" element={<Register />}/>
                 <Route path="/login" element={<Login />}/>
