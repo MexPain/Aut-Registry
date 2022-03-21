@@ -2,17 +2,24 @@ package hu.bme.aut.registrybackend.controllers
 
 import hu.bme.aut.registrybackend.entities.ERole
 import hu.bme.aut.registrybackend.entities.Role
-import hu.bme.aut.registrybackend.entities.User
+import hu.bme.aut.registrybackend.payloads.JwtResponse
+import hu.bme.aut.registrybackend.payloads.LoginRequest
 import hu.bme.aut.registrybackend.payloads.MessageResponse
 import hu.bme.aut.registrybackend.payloads.SignupRequest
 import hu.bme.aut.registrybackend.repositories.RoleRepository
 import hu.bme.aut.registrybackend.repositories.UserRepository
+import hu.bme.aut.registrybackend.security.jwt.JwtUtils
 import org.springframework.http.ResponseEntity
+import org.springframework.security.authentication.AuthenticationManager
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.core.userdetails.User
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import kotlin.streams.toList
 
 @RestController
 @RequestMapping("/api/users")
@@ -20,6 +27,8 @@ class AuthController(
     private val userRepository: UserRepository,
     private val roleRepository: RoleRepository,
     private val passwordEncoder: PasswordEncoder,
+    private val jwtUtils: JwtUtils,
+    private val authManager: AuthenticationManager
 ) {
 
     @PostMapping("/signup")
@@ -34,7 +43,9 @@ class AuthController(
         }
 
         val user = signupRequest.let {
-            User(it.username, passwordEncoder.encode(it.password), it.firstname, it.lastname)
+            hu.bme.aut.registrybackend.entities.User(it.username,
+                passwordEncoder.encode(it.password),
+                it.firstname, it.lastname)
         }
         val strRoles = signupRequest.roles
         val roles: MutableSet<Role> = hashSetOf()
@@ -68,5 +79,19 @@ class AuthController(
         return ResponseEntity.ok(
             MessageResponse("User registered successfully")
         )
+    }
+
+    @PostMapping("/signin")
+    fun authenticateUser(@RequestBody loginRequest: LoginRequest) : ResponseEntity<Any> {
+        val authentication = authManager.authenticate(
+            UsernamePasswordAuthenticationToken(loginRequest.username, loginRequest.password)
+        )
+        SecurityContextHolder.getContext().authentication = authentication
+        val jwt = jwtUtils.generateJwtToken(authentication)
+
+        val userDetails: User = authentication.principal as User
+//        val roles = userDetails.authorities.stream()
+//            .map { it.authority }.toList()
+        return ResponseEntity.ok(JwtResponse(jwt))
     }
 }

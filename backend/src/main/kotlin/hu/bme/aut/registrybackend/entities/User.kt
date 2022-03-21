@@ -5,10 +5,10 @@ import javax.persistence.*
 @Entity
 @Table(name = "users")
 class User(
-    private val username: String,
-    private val password: String,
-    private val firstname: String,
-    private val lastname: String,
+    val username: String,
+    val password: String,
+    val firstname: String,
+    val lastname: String,
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(	name = "user_roles",
