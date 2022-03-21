@@ -1,17 +1,17 @@
-import {Alert, Button, CardImg, Col, Container, Form, FormGroup, FormLabel, InputGroup, Row} from "react-bootstrap";
+import {Button, CardImg, Col, Container, Form, FormGroup, FormLabel, InputGroup, Row} from "react-bootstrap";
 import {useState} from "react";
 import * as Yup from "yup";
 import {useFormik} from "formik";
 
-const required = (value) => {
-    if (!value) {
-        return (
-            <Alert className="alert-danger" role="alert">
-                This field is required!
-            </Alert>
-        );
-    }
-};
+// const required = (value) => {
+//     if (!value) {
+//         return (
+//             <Alert className="alert-danger" role="alert">
+//                 This field is required!
+//             </Alert>
+//         );
+//     }
+// };
 
 const Login = (props) => {
 
