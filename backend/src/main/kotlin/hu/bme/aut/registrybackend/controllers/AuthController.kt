@@ -2,19 +2,19 @@ package hu.bme.aut.registrybackend.controllers
 
 import hu.bme.aut.registrybackend.entities.ERole
 import hu.bme.aut.registrybackend.entities.Role
-import hu.bme.aut.registrybackend.payloads.JwtResponse
-import hu.bme.aut.registrybackend.payloads.LoginRequest
-import hu.bme.aut.registrybackend.payloads.MessageResponse
-import hu.bme.aut.registrybackend.payloads.SignupRequest
+import hu.bme.aut.registrybackend.payloads.*
 import hu.bme.aut.registrybackend.repositories.RoleRepository
 import hu.bme.aut.registrybackend.repositories.UserRepository
 import hu.bme.aut.registrybackend.security.jwt.JwtUtils
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.userdetails.User
+import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.crypto.password.PasswordEncoder
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -93,5 +93,16 @@ class AuthController(
 //        val roles = userDetails.authorities.stream()
 //            .map { it.authority }.toList()
         return ResponseEntity.ok(JwtResponse(jwt))
+    }
+
+    @GetMapping("/profile")
+//    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
+    fun getUserProfile() : ResponseEntity<Any> {
+        val user: User = SecurityContextHolder.getContext().authentication.principal as User
+        val userData = userRepository.findByUsername(user.username)
+            ?: throw UsernameNotFoundException("Logged in profile was not found")
+
+        return ResponseEntity.ok(ProfileResponse(userData.username,
+            userData.firstname, userData.lastname))
     }
 }
