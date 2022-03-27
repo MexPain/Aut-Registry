@@ -6,8 +6,9 @@ import hu.bme.aut.registrybackend.payloads.*
 import hu.bme.aut.registrybackend.repositories.RoleRepository
 import hu.bme.aut.registrybackend.repositories.UserRepository
 import hu.bme.aut.registrybackend.security.jwt.JwtUtils
+import hu.bme.aut.registrybackend.security.services.RefreshTokenService
+import hu.bme.aut.registrybackend.utils.TokenRefreshException
 import org.springframework.http.ResponseEntity
-import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
@@ -19,7 +20,6 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import kotlin.streams.toList
 
 @RestController
 @RequestMapping("/api/users")
@@ -28,7 +28,8 @@ class AuthController(
     private val roleRepository: RoleRepository,
     private val passwordEncoder: PasswordEncoder,
     private val jwtUtils: JwtUtils,
-    private val authManager: AuthenticationManager
+    private val authManager: AuthenticationManager,
+    private val refreshTokenService: RefreshTokenService
 ) {
 
     @PostMapping("/signup")
@@ -90,9 +91,29 @@ class AuthController(
         val jwt = jwtUtils.generateJwtToken(authentication)
 
         val userDetails: User = authentication.principal as User
+        val refreshToken = refreshTokenService.createRefreshToken(userDetails.username)
 //        val roles = userDetails.authorities.stream()
 //            .map { it.authority }.toList()
-        return ResponseEntity.ok(JwtResponse(jwt))
+        return ResponseEntity.ok(JwtResponse(jwt, refreshToken.token))
+    }
+
+    @PostMapping("/refreshtoken")
+    fun refreshToken(@RequestBody request: TokenRefreshRequest): ResponseEntity<Any> {
+        val refreshToken = refreshTokenService.findByToken(request.refreshToken)
+        if(refreshToken != null && refreshTokenService.verifyExpiration(refreshToken)){
+            val user = refreshToken.user
+            val token = jwtUtils.generateTokenFromUsername(user.username)
+            return ResponseEntity.ok(TokenRefreshResponse(
+                token, request.refreshToken
+            ))
+        }else{
+            throw TokenRefreshException(request.refreshToken,
+                "Refresh token is not in database!")
+//            return ResponseEntity
+//                .badRequest()
+//                .body("Bla bla bla")
+        }
+
     }
 
     @GetMapping("/profile")

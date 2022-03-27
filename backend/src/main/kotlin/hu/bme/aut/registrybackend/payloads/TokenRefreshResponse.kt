@@ -1,6 +1,6 @@
 package hu.bme.aut.registrybackend.payloads
 
-data class JwtResponse(
+data class TokenRefreshResponse(
     val token: String,
     val refreshToken: String,
     val type: String = "Bearer",
