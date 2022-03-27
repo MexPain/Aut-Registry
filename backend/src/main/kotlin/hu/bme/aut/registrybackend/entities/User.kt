@@ -16,5 +16,8 @@ class User(
         inverseJoinColumns = [JoinColumn(name = "role_id")])
     var roles: Set<Role> = HashSet<Role>(),
 
+    @OneToMany(mappedBy = "user")
+    var borrowedItems: Set<ItemLending> = HashSet(),
+
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY) private val id: Long? = null
 )
