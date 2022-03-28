@@ -1,6 +1,6 @@
 package hu.bme.aut.registrybackend.utils
 
-import hu.bme.aut.registrybackend.payloads.ErrorMessage
+import hu.bme.aut.registrybackend.payloads.response.ErrorMessage
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.ResponseStatus

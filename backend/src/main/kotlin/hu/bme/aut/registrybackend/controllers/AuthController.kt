@@ -2,7 +2,13 @@ package hu.bme.aut.registrybackend.controllers
 
 import hu.bme.aut.registrybackend.entities.ERole
 import hu.bme.aut.registrybackend.entities.Role
-import hu.bme.aut.registrybackend.payloads.*
+import hu.bme.aut.registrybackend.payloads.request.LoginRequest
+import hu.bme.aut.registrybackend.payloads.request.SignupRequest
+import hu.bme.aut.registrybackend.payloads.request.TokenRefreshRequest
+import hu.bme.aut.registrybackend.payloads.response.JwtResponse
+import hu.bme.aut.registrybackend.payloads.response.MessageResponse
+import hu.bme.aut.registrybackend.payloads.response.ProfileResponse
+import hu.bme.aut.registrybackend.payloads.response.TokenRefreshResponse
 import hu.bme.aut.registrybackend.repositories.RoleRepository
 import hu.bme.aut.registrybackend.repositories.UserRepository
 import hu.bme.aut.registrybackend.security.jwt.JwtUtils
@@ -103,9 +109,11 @@ class AuthController(
         if(refreshToken != null && refreshTokenService.verifyExpiration(refreshToken)){
             val user = refreshToken.user
             val token = jwtUtils.generateTokenFromUsername(user.username)
-            return ResponseEntity.ok(TokenRefreshResponse(
+            return ResponseEntity.ok(
+                TokenRefreshResponse(
                 token, request.refreshToken
-            ))
+            )
+            )
         }else{
             throw TokenRefreshException(request.refreshToken,
                 "Refresh token is not in database!")
@@ -123,7 +131,9 @@ class AuthController(
         val userData = userRepository.findByUsername(user.username)
             ?: throw UsernameNotFoundException("Logged in profile was not found")
 
-        return ResponseEntity.ok(ProfileResponse(userData.username,
-            userData.firstname, userData.lastname))
+        return ResponseEntity.ok(
+            ProfileResponse(userData.username,
+            userData.firstname, userData.lastname)
+        )
     }
 }
