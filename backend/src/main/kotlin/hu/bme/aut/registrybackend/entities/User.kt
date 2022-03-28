@@ -14,10 +14,10 @@ class User(
     @JoinTable(	name = "user_roles",
         joinColumns = [JoinColumn(name = "user_id")],
         inverseJoinColumns = [JoinColumn(name = "role_id")])
-    var roles: Set<Role> = HashSet<Role>(),
+    var roles: Set<Role> = hashSetOf(),
 
     @OneToMany(mappedBy = "user")
-    var borrowedItems: Set<ItemLending> = HashSet(),
+    var borrowedItems: Set<ItemLending> = hashSetOf(),
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY) private val id: Long? = null
 )
