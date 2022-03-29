@@ -10,7 +10,7 @@ class Item(
     val created: Date,
 
     @OneToMany(mappedBy = "item")
-    var borrowedBy: Set<ItemLending> = hashSetOf(),
+    var borrowedBy: MutableSet<ItemLending> = hashSetOf(),
 
     val description: String = "",
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY) val id: Long? = null

@@ -1,14 +1,16 @@
 package hu.bme.aut.registrybackend.entities
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import javax.persistence.*
 
 @Entity
 @Table(name = "users")
 class User(
     val username: String,
-    val password: String,
+    @JsonIgnore val password: String,
     val firstname: String,
     val lastname: String,
+    //TODO email, phone, ...
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(	name = "user_roles",
@@ -17,7 +19,7 @@ class User(
     var roles: Set<Role> = hashSetOf(),
 
     @OneToMany(mappedBy = "user")
-    var borrowedItems: Set<ItemLending> = hashSetOf(),
+    var borrowedItems: MutableSet<ItemLending> = hashSetOf(),
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY) private val id: Long? = null
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY) val id: Long? = null
 )
