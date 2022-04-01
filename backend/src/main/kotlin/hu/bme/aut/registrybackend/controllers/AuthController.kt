@@ -142,9 +142,9 @@ class AuthController(
             ?: throw UsernameNotFoundException("Logged in profile was not found")
 
         return ResponseEntity.ok(
-//            ProfileResponse(userData.username,
-//            userData.firstname, userData.lastname)
-        userData    //TODO temp
+            ProfileResponse(userData.username,
+            userData.firstname, userData.lastname)
+//        userData    //temp debug
         )
     }
 

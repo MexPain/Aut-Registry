@@ -1,7 +1,9 @@
 import {Button, CardImg, Col, Container, Form, FormGroup, FormLabel, InputGroup, Row} from "react-bootstrap";
 import {useState} from "react";
+import {useNavigate} from "react-router-dom";
 import * as Yup from "yup";
 import {useFormik} from "formik";
+import AuthService from "../services/auth.service";
 
 // const required = (value) => {
 //     if (!value) {
@@ -17,7 +19,7 @@ const Login = (props) => {
 
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState("");
-
+    const navigate = useNavigate()
     const validationSchema = Yup.object().shape({
         username: Yup.string()
             .required("Username is required"),
@@ -34,34 +36,12 @@ const Login = (props) => {
         validateOnBlur: false,
         validateOnChange: false,
         onSubmit: (data) => {
-            console.log(JSON.stringify(data, null, 2))
-            //handlelogin
+            setMessage("");
+            setLoading(true);
+
+            AuthService.login(data.username, data.password)
         }
     })
-
-    const handleLogin = (e) => {
-        e.preventDefault();
-        // setMessage("");
-        // setLoading(true);
-        //
-        // AuthService.login(username, password).then(
-        //     () => {
-        //         props.history.push("/profile");
-        //         window.location.reload();
-        //     },
-        //     (error) => {
-        //         const resMessage =
-        //             (error.response &&
-        //                 error.response.data &&
-        //                 error.response.data.message) ||
-        //             error.message ||
-        //             error.toString();
-        //         setLoading(false);
-        //         setMessage(resMessage);
-        //     }
-        // )
-
-    };
 
     return (
         <Container fluid className="text-dark p-5">
