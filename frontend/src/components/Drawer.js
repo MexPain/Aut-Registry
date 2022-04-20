@@ -1,39 +1,23 @@
-import {
-    Drawer as MuiDrawer,
-    Divider,
-    IconButton,
-    List,
-    ListItem,
-    ListItemIcon,
-    ListItemText,
-    makeStyles,
-} from "@material-ui/core";
+import {styled, useTheme} from "@mui/material/styles";
 import { Link as RouterLink, useLocation, useNavigate } from 'react-router-dom';
-import {ChevronLeft, MoveToInbox as InboxIcon} from "@material-ui/icons";
 import {forwardRef, useContext, useMemo, useState} from "react";
 import PropTypes from "prop-types";
 import {UserContext} from "../contexts/UserContext";
 import AlertDialog from "./AlertDialog";
+import {Divider, IconButton, List, ListItem, ListItemIcon, ListItemText, Drawer as MuiDrawer} from "@mui/material";
+import {ChevronLeft} from "@mui/icons-material";
+import InboxIcon from '@mui/icons-material/MoveToInbox';
 
 const drawerWidth = 240;
 
-const useStyles = makeStyles((theme) => ({
-    drawer: {
-        width: drawerWidth,
-        flexShrink: 0,
-    },
-    drawerPaper: {
-        width: drawerWidth,
-    },
-    drawerHeader: {
-        display: 'flex',
-        alignItems: 'center',
-        padding: theme.spacing(0, 1),
-        // necessary for content to be below app bar
-        ...theme.mixins.toolbar,
-        justifyContent: 'flex-end',
-    },
-}))
+const DrawerHeader = styled('div')(({ theme }) => ({
+    display: 'flex',
+    alignItems: 'center',
+    padding: theme.spacing(0, 1),
+    // necessary for content to be below app bar
+    ...theme.mixins.toolbar,
+    justifyContent: 'flex-end',
+}));
 
 ListItemLink.propTypes = {
     icon: PropTypes.element,
@@ -63,7 +47,6 @@ function ListItemLink(props) {
 
 const Drawer = ({isDrawerOpen, handleDrawerClose}) => {
 
-    const classes = useStyles();
     const {currentUser, login, logOut} = useContext(UserContext)
     const location = useLocation()
     const navigate = useNavigate()
@@ -75,11 +58,11 @@ const Drawer = ({isDrawerOpen, handleDrawerClose}) => {
 
     const drawer = (
         <div>
-            <div className={classes.drawerHeader}>
+            <DrawerHeader>
                 <IconButton onClick={handleDrawerClose}>
                     <ChevronLeft />
                 </IconButton>
-            </div>
+            </DrawerHeader>
             <Divider />
             <List component="nav" aria-label="main-content-nav">
                 <ListItemLink
@@ -121,13 +104,17 @@ const Drawer = ({isDrawerOpen, handleDrawerClose}) => {
     return(
         <div>
             <MuiDrawer
-                className={classes.drawer}
+                sx={{
+                    width: drawerWidth,
+                    flexShrink: 0,
+                    '& .MuiDrawer-paper': {
+                        width: drawerWidth,
+                        boxSizing: 'border-box',
+                    },
+                }}
                 variant="persistent"
                 anchor="left"
                 open={isDrawerOpen}
-                classes={{
-                    paper: classes.drawerPaper,
-                }}
             >{drawer}
             </MuiDrawer>
             <AlertDialog

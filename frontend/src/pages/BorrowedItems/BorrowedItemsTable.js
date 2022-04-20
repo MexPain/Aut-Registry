@@ -1,50 +1,35 @@
-import {
-    makeStyles,
-    Paper,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
-    withStyles
-} from "@material-ui/core";
 import {itemsList} from "../../utils/ItemsListTemp";
 import {useState} from "react";
+import {Paper, Table, TableBody, TableCell, tableCellClasses, TableContainer, TableHead, TableRow} from "@mui/material";
+import {styled} from "@mui/material/styles";
 
-const useStyles = makeStyles({
-    table: {
-        minWidth: 650,
-    },
-});
-
-const StyledTableCell = withStyles((theme) => ({
-    head: {
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+    [`&.${tableCellClasses.head}`]: {
         backgroundColor: theme.palette.secondary.light,
         color: theme.palette.secondary.contrastText,
     },
-    body: {
+    [`&.${tableCellClasses.body}`]: {
         fontSize: 14,
     },
-}))(TableCell);
+}));
 
-const StyledTableRow = withStyles((theme) => ({
-    root: {
-        '&:nth-of-type(odd)': {
-            backgroundColor: theme.palette.action.hover,
-        },
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+    '&:nth-of-type(odd)': {
+        backgroundColor: theme.palette.action.hover,
     },
-}))(TableRow);
-
+    // hide last border
+    '&:last-child td, &:last-child th': {
+        border: 0,
+    },
+}));
 
 const BorrowedItemsTable = () => {
 
-    const classes = useStyles();
     const [items, setItems] = useState(itemsList);
 
     return (
         <TableContainer component={Paper}>
-            <Table className={classes.table} size="small" aria-label="simple table">
+            <Table sx={{ minWidth: 650 }} size="small" aria-label="simple table">
                 <TableHead>
                     <TableRow>
                         <StyledTableCell>Name</StyledTableCell>
