@@ -1,66 +1,148 @@
-import {useEffect, useState} from "react";
-import {Container, Nav, Navbar, NavItem} from "react-bootstrap";
-import {Link} from "react-router-dom";
+import {useContext, useEffect, useState} from "react";
+import {Link as RouterLink} from "react-router-dom";
+import {
+    AppBar, Box,
+    Button, Grid,
+    IconButton,
+    makeStyles,
+    Toolbar,
+    Typography
+} from "@material-ui/core";
+import MenuIcon from '@material-ui/icons/Menu';
+import {AccountCircle,} from "@material-ui/icons";
+import clsx from "clsx";
+import authService from "../services/auth.service";
+import {UserContext} from "../contexts/UserContext";
+import Popup from "./Popup";
 
-const NavBar = () => {
-    const [showAdminBoard, setShowAdminBoard] = useState(false)
-    const [currentUser, setCurrentUser] = useState(undefined)
+const drawerWidth = 240;
 
-    // useEffect(() => {
-    //     if(){
-    //         //get user from backend && show navbar with more options
-    //         //if admin -> admin options (too)
-    //     }
-    // }, [])
+const useStyles = makeStyles((theme) => ({
+    root: {
+        display: 'flex',
+    },
+    navMain: {
+        flexGrow: 1,
+        alignItems: "center",
+    },
+    title: {
+        marginRight: theme.spacing(2),
+    },
+    appBar: {
+        transition: theme.transitions.create(['margin', 'width'], {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.leavingScreen,
+        }),
+    },
+    appBarShift: {
+        width: `calc(100% - ${drawerWidth}px)`,
+        marginLeft: drawerWidth,
+        transition: theme.transitions.create(['margin', 'width'], {
+            easing: theme.transitions.easing.easeOut,
+            duration: theme.transitions.duration.enteringScreen,
+        }),
+    },
+    drawerButton: {
+        marginRight: theme.spacing(2),
+    },
+    menuButton: {
+        flexShrink: 0,
+    },
+    hide: {
+        display: 'none',
+    },
+    logo: {
+        height: 40,
+        marginRight: theme.spacing(2),
+    }
 
-    const logOut = () => {
-        //TODO
+ }));
+
+const NavBar = ({isDrawerOpen, handleDrawerOpen}) => {
+    const classes = useStyles();
+    const {currentUser, login, logOut} = useContext(UserContext)
+
+    const [profilePopup, setProfilePopup] = useState(null)
+
+    const profileClick = (event) => {
+        setProfilePopup(event.currentTarget)
+    }
+
+    const defaultBar = () => {
+        return (
+            <Toolbar>
+                <Box
+                    className={classes.logo}
+                    component="img"
+                    alt={"logo img"}
+                    src={"/images/aut.png"}
+                />
+                <Grid container className={classes.navMain}>
+                    <Typography variant="h5" color="inherit" className={classes.title}>Item registry</Typography>
+                    <Button size="large" color="inherit" component={RouterLink} to="/about" className={classes.menuButton}>About us</Button>
+                </Grid>
+                <Button size="large" color="inherit" component={RouterLink} to="/login" className={classes.menuButton}>Login</Button>
+                <Button size="large" color="inherit" component={RouterLink} to="/register" className={classes.menuButton}>Sign up</Button>
+            </Toolbar>
+        )
+    }
+
+    const userBar = () => {
+
     }
 
     return (
-        <Navbar expand="lg" className="m-1 navbar-custom">
-            <Container>
-                <Navbar.Brand href="#home">
-                <img
-                    alt="Logo"
-                    src="/public/logo192.png"
-                    width="30"
-                    height="30"
-                    className="d-inline-block align-top"
-                />
-                </Navbar.Brand>
-                <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-                <Navbar.Collapse id="responsive-navbar-nav">
-                    <Nav className="me-auto">
-                        <NavItem href="/home">
-                            <Nav.Link as={Link} to="/home" className="text-white">Home</Nav.Link>
-                        </NavItem>
-                        <NavItem href="/about">
-                            <Nav.Link as={Link} to="/about" className="text-white">About</Nav.Link>
-                        </NavItem>
-                    </Nav>
-                    {currentUser ? (
-                        <Nav>
-                            <NavItem href="/profile">
-                                <Nav.Link as={Link} to="/profile" className="text-white">{currentUser.username}</Nav.Link>
-                            </NavItem>
-                            <NavItem href="/login">
-                                <Nav.Link as={Link} to="/login" className="text-white" onClick={logOut}>Log Out</Nav.Link>
-                            </NavItem>
-                        </Nav>
-                    ) : (
-                        <Nav>
-                            <NavItem href="/register">
-                                <Nav.Link as={Link} to="/register" className="text-white">Sign Up</Nav.Link>
-                            </NavItem>
-                            <NavItem href="/login">
-                                <Nav.Link as={Link} to="/login" className="text-white">Sign In</Nav.Link>
-                            </NavItem>
-                        </Nav>
-                    )}
-                </Navbar.Collapse>
-            </Container>
-        </Navbar>
+        <div className={classes.root}>
+            <AppBar position="static"
+                    className={clsx(classes.appBar, {
+                        [classes.appBarShift]: isDrawerOpen,
+                    })}
+            >
+                <Toolbar>
+                    {currentUser &&
+                    <IconButton
+                        edge="start"
+                        className={clsx(classes.drawerButton, isDrawerOpen && classes.hide)}
+                        color="inherit"
+                        aria-label="menu"
+                        onClick={handleDrawerOpen}
+                    >
+                        <MenuIcon />
+                    </IconButton>
+                    }
+                    <Box
+                        className={classes.logo}
+                        component="img"
+                        alt={"logo img"}
+                        src={"/images/aut.png"}
+                    />
+                    <Grid container className={classes.navMain}>
+                        <Typography variant="h5" color="inherit" className={classes.title}>Item registry</Typography>
+                        <Button size="large" color="inherit" component={RouterLink} to="/about" className={classes.menuButton}>About us</Button>
+                    </Grid>
+                    {!currentUser &&
+                        <Button size="large" color="inherit" component={RouterLink} to="/login"
+                                className={classes.menuButton}>Login</Button>
+                    }
+                    {!currentUser &&
+                        <Button size="large" color="inherit" component={RouterLink} to="/register"
+                            className={classes.menuButton}>Sign up</Button>
+                    }
+                    {currentUser &&
+                        <div>
+                            <IconButton
+                                aria-label="current user"
+                                onClick={profileClick}
+                                color="inherit"
+                            >
+                                <AccountCircle/>
+                            </IconButton>
+                            <Popup anchorEl={profilePopup} handleClose={() => {setProfilePopup(null)}}/>
+                        </div>
+                    }
+                </Toolbar>
+            </AppBar>
+        </div>
     )
 }
 export default NavBar
