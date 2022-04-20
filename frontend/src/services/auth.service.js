@@ -2,11 +2,41 @@ import axios from "axios";
 
 const API_URL = "http://localhost:8080/api/users/"
 
-const register = (username, password, firstname, lastname) => {  //TODO add additional info
-    return axios.post(
-        API_URL + "signup",
-        {username, password, firstname, lastname})
-    // console.log("User registered: " + username + "with password: " + password)
+const register = (email, password, firstname, lastname) => {  //TODO add additional info (profilePic)
+    // return axios.post(
+    //     API_URL + "signup",
+    //     {username, password, firstname, lastname})
+
+    //regi registerből:
+    // authService.register(username, password, firstname, lastname).then(
+    //     (response) => {
+    //         setMessage(response.data.message);
+    //         setSuccessful(true);
+    //     },
+    //     (error) => {
+    //         const resMessage =
+    //             (error.response &&
+    //                 error.response.data &&
+    //                 error.response.data.message) ||
+    //             error.message ||
+    //             error.toString();
+    //         setMessage(resMessage);
+    //         setSuccessful(false);
+    //     }
+    // )
+
+    console.log("User registered: " + firstname+ " " + lastname + " with email: " + email)
+
+    return {    //TODO temp + talán már itt lekezelni a promise-t, mint a loginnal
+        id: 10,
+        email: email,
+        password: password,
+        firstname: firstname,
+        lastname: lastname,
+        profilePic: "/images/yt.png",
+        roles: ["user"]
+    }
+
 }
 
 const login = (username, password) => {
@@ -14,25 +44,25 @@ const login = (username, password) => {
         API_URL + "signin",
         {username, password})
         .then((response) => {
-            if(response.data.accessToken) {
-                localStorage.setItem("user", JSON.stringify(response.data))
+            console.log(`Login request successful, response data: ${response.data}`)
+            if (response.data.token) {
+                localStorage.setItem("user", JSON.stringify(response.data)) //TODO attol fugg mit ad vissza
             }
-            let token = localStorage.getItem("user")
-            token ? console.log(token) : console.log("fuked")
             return response.data
         })
         .catch((error) => {
             console.log(error)
         })
-    // console.log("Login request sent for " + username)
 }
 
 const logout = () => {
     localStorage.removeItem("user")
+    console.log("Log out successful")
 }
 
 const getCurrentUser = () => {
-    return JSON.parse(localStorage.getItem("user"))
-}
+    let user = JSON.parse(localStorage.getItem("user"))
+    return (user && user.token) || undefined;
+};
 
 export default {register, login, logout, getCurrentUser}
