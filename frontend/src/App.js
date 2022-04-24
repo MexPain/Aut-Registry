@@ -34,7 +34,7 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
     }),
 );
 
-const App = () => {
+const App = () => { //AUTH LINKET ÁTÍRNI!!!!!!
 
     const theme = useTheme()
 
@@ -83,10 +83,10 @@ const App = () => {
                     <Route path="/home" element={<Home/>}/>
                     <Route path="/about" element={<About/>}/>
                     <Route path="/user/myItems"
-                           element={currentUser ? <BorrowedItemsContent/> : <Navigate to="/login"/>}/>
-                    <Route path="/user/profile" element={currentUser ? <UserProfile/> : <Navigate to="/login"/>}/>
+                           element={currentUser ? <BorrowedItemsContent/> : <Navigate to="/login" state={{error: "yes"}}/>}/>
+                    <Route path="/user/profile" element={currentUser ? <UserProfile/> : <Navigate to="/login/expired"/>}/>
                     <Route path="/register" element={<Register/>}/>
-                    <Route path="/login" element={<Login/>}/>
+                    <Route path="/login/*" element={<Login/>}/>
                     <Route path="*" element={<ErrorPage/>}/>
                 </Routes>
             </Main>

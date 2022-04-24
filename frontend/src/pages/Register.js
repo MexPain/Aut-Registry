@@ -1,23 +1,31 @@
 import {Formik, Form} from "formik";
 import * as Yup from 'yup';
-import {useEffect, useRef, useState} from "react";
 import {Link as RouterLink, useNavigate} from "react-router-dom";
 import AuthService from "../services/auth.service";
-import {Avatar, Button, CircularProgress, Container, Grid, Link, Paper, Typography} from "@mui/material";
+import {
+    Avatar,
+    Button,
+    CircularProgress,
+    Container,
+    Grid,
+    Link,
+    Paper,
+    Typography
+} from "@mui/material";
 import {useTheme} from "@mui/material/styles";
 import {AccountCircle} from "@mui/icons-material";
 import FormTextField from "../components/FormTextField";
+import {FileUploader} from "../components/fileUpload/FileUploader";
 
 
 const Register = () => {
 
     const theme = useTheme()
-    const [loading, setLoading] = useState(false);
-    const [failure, setFailure] = useState(false)
+
     const navigate = useNavigate()
 
-
     const initialValues = {
+        username: "",
         email: "",
         password: "",
         confirmPassword: "",
@@ -25,6 +33,7 @@ const Register = () => {
         lastname: "",
         description: "",
         phone: "",
+        images: [],
     }
 
     const validationSchema = Yup.object().shape({
@@ -37,15 +46,19 @@ const Register = () => {
         confirmPassword: Yup.string()
             .required("This field is required")
             .oneOf([Yup.ref("password"), null], "Confirm Password does not match"),
-        firstname: Yup.string()
-            .required("Firstname is required"),
-        lastname: Yup.string()
-            .required("Lastname is required"),
         description: Yup.string()
-            .max(300, "Must be a maximum of 300 characters"),
+            .max(300, "Must not exceed 300 characters"),
         phone: Yup.number()
             .integer()
             .typeError("Enter a valid phone number"),
+        username: Yup.string()
+            .required("Username is required"),
+        images: Yup.array()
+            .max(1, "You can only upload 1 file")
+            // .of(Yup.object().shape({
+            //     file: Yup.object().required("Uploaded file not available"),
+            //     errors: Yup.array().length(0, "The uploaded file is not an image"),
+            // })),
     })
 
     return (
@@ -70,11 +83,14 @@ const Register = () => {
                 <Formik
                     initialValues={{...initialValues}}
                     validationSchema={validationSchema}
+                    validateOnBlur={true}
+                    validateOnChange={false}
                     onSubmit={values => {
+                        console.log(values)
                         //add values to service, navigate to login if success
                         //show alert if fail
                     }}
-                >
+                >{({ values, errors, isValid, isSubmitting }) =>(
                     <Form>
                         <Grid container spacing={2}>
                             <Grid item xs={6}>
@@ -91,26 +107,33 @@ const Register = () => {
                                 />
                             </Grid>
 
-                            <Grid item xs={12}>
-                                <FormTextField
-                                    label="Email"
-                                    name="email"
-                                    autoComplete="email"
-                                />
-                            </Grid>
-                            <Grid item xs={12}>
+                            <Grid item xs={6}>
                                 <FormTextField
                                     name="password"
-                                    label="Password"
+                                    label="Password*"
                                     type="password"
                                     autoComplete="current-password"
                                 />
                             </Grid>
-                            <Grid item xs={12}>
+                            <Grid item xs={6}>
                                 <FormTextField
                                     name="confirmPassword"
-                                    label="Confirm password"
+                                    label="Confirm password*"
                                     type="password"
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <FormTextField
+                                    label="Username*"
+                                    name="username"
+                                    placeholder="Displays as the name of your account. Must be unique."
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <FormTextField
+                                    label="Email*"
+                                    name="email"
+                                    autoComplete="email"
                                 />
                             </Grid>
                             <Grid item xs={12}>
@@ -129,20 +152,29 @@ const Register = () => {
                                     placeholder="A short introduction about yourself..."
                                 />
                             </Grid>
+
+                            <Typography marginLeft={2} marginTop={2} variant="subtitle1">Upload profile
+                                picture</Typography>
+                            <Grid container item>
+                                <FileUploader name="images"/>
+                            </Grid>
+
                             <Grid item xs={12}>
                                 <Button
                                     type="submit"
-                                    disabled={loading}
+                                    disabled={!isValid || isSubmitting}
                                     fullWidth
                                     variant="contained"
                                     color="primary"
                                     sx={{
                                         marginTop: theme.spacing(2),
-                                        marginBottom: theme.spacing(2),
                                     }}
                                 >
-                                    {loading ? <CircularProgress size={24}/> : 'Register'}
+                                    {isSubmitting ? <CircularProgress size={24}/> : 'Register'}
                                 </Button>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Typography variant="caption">Fields marked with * are mandatory</Typography>
                             </Grid>
                             <Grid container justifyContent="flex-end">
                                 <Grid item>
@@ -153,6 +185,7 @@ const Register = () => {
                             </Grid>
                         </Grid>
                     </Form>
+                    )}
                 </Formik>
             </Paper>
         </Container>

@@ -1,16 +1,17 @@
 import {useContext, useEffect, useRef, useState} from "react";
-import {useNavigate} from "react-router-dom";
+import {useNavigate, Routes, Route} from "react-router-dom";
 import * as Yup from "yup";
 import {Formik, Form} from "formik";
 import {Link as RouterLink} from 'react-router-dom';
 import {UserContext} from "../contexts/UserContext";
 import {
+    Alert,
     Avatar,
     Button,
-    CircularProgress,
+    CircularProgress, Collapse,
     Container,
     FormControlLabel,
-    Grid, Link,
+    Grid, IconButton, Link,
     Paper,
     Switch,
     Typography
@@ -18,11 +19,12 @@ import {
 import {useTheme} from "@mui/material/styles";
 import {AccountCircle} from "@mui/icons-material";
 import FormTextField from "../components/FormTextField";
+import CloseIcon from '@mui/icons-material/Close';
 
-const Login = (props) => {
+const Login = ({error}) => {    //TODO navigation error messages
 
     const [loading, setLoading] = useState(false);
-    const [failure, setFailure] = useState(false)
+    const [alertOpen, setAlertOpen] = useState(false)
     const {currentUser, login} = useContext(UserContext)
     const navigate = useNavigate()
     const theme = useTheme()
@@ -40,8 +42,40 @@ const Login = (props) => {
             .required("Password is required"),
     })
 
+    const SessionAlert = () => {
+        return (
+            <Collapse in={alertOpen}>
+                <Alert
+                    action={
+                        <IconButton
+                            aria-label="close"
+                            color="inherit"
+                            size="small"
+                            onClick={() => {
+                                setAlertOpen(false);
+                            }}
+                        >
+                            <CloseIcon fontSize="inherit" />
+                        </IconButton>
+                    }
+                    sx={{ mb: 2 }}
+                >
+                    Close me!
+                </Alert>
+            </Collapse>
+        )
+    }
+
+    useEffect(()=>{
+        error && setAlertOpen(true)
+    }, [error])
+
     return (
         <Container maxWidth="md" sx={{marginTop: theme.spacing(5)}}>
+            {/*<Routes>*/}
+            {/*    <Route path="expired" element={<SessionAlert />}/>*/}
+            {/*</Routes>*/}
+            {alertOpen && <SessionAlert />}
             <Paper elevation={2} sx={{
                 padding: theme.spacing(3),
                 marginTop: 8,
@@ -70,7 +104,7 @@ const Login = (props) => {
                                     navigate("/home")
                                 }, () => {
                                     setLoading(false)
-                                    setFailure(true)    //TODO failure message (snackbar mybe)
+                                    //setError("Wrong credentials. Please try again.")
                                 })
                         }
                     }}
