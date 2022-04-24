@@ -53,12 +53,11 @@ const Register = () => {
             .typeError("Enter a valid phone number"),
         username: Yup.string()
             .required("Username is required"),
-        images: Yup.array()
-            .max(1, "You can only upload 1 file")
-            // .of(Yup.object().shape({
-            //     file: Yup.object().required("Uploaded file not available"),
-            //     errors: Yup.array().length(0, "The uploaded file is not an image"),
-            // })),
+        images: Yup.array(
+            // Yup.object({     //render errors
+            //     url: Yup.string().required("Object required"),
+            // })
+        ).max(1, "You can only upload 1 file"),
     })
 
     return (
@@ -85,10 +84,30 @@ const Register = () => {
                     validationSchema={validationSchema}
                     validateOnBlur={true}
                     validateOnChange={false}
-                    onSubmit={values => {
-                        console.log(values)
+                    onSubmit={(values, { setSubmitting } )=> {
+                        console.log(values.images)
+                        AuthService.register(
+                            values.username,
+                            values.email,
+                            values.password,
+                            values.description,
+                            values.phone,
+                            values.images.length > 0 ? values.images[0].url : null,
+                            values.firstname,
+                            values.lastname
+                            ).then(
+                            (success) => {
+                                navigate("/login")
+                            },
+                            (error) => {
+                                console.log(error)
+                                setSubmitting(false)
+                            }
+                        )
                         //add values to service, navigate to login if success
                         //show alert if fail
+                        console.log(values)
+                        //setSubmitting(false)
                     }}
                 >{({ values, errors, isValid, isSubmitting }) =>(
                     <Form>

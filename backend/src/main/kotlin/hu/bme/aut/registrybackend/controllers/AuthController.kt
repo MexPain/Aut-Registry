@@ -42,7 +42,6 @@ class AuthController(
 
     @PostMapping("/signup")
     fun registerUser(
-        @RequestParam("file") file: MultipartFile,
         @RequestBody signupRequest: SignupRequest
     ): ResponseEntity<Any> {
         //check if user already exists
@@ -51,16 +50,14 @@ class AuthController(
                 .badRequest()
                 .body(MessageResponse("Error: Username is already taken!"))
         }
+
         //handling the image
         var image: FileStorage? = null
-        try {
-            image = fileStorageService.store(file)
-        }catch (e: IllegalArgumentException) {
-            val message = "Could not upload the file: " + file.originalFilename + "!"
-            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(
-                MessageResponse(message)
-            )
+        signupRequest.imageUrl?.let {
+            val imageId = it.split("/").last()
+            image = fileStorageService.getFile(imageId)
         }
+
         //creating new user
         val user = signupRequest.let {
             hu.bme.aut.registrybackend.entities.User(

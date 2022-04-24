@@ -3,8 +3,9 @@ import {Grid, LinearProgress, linearProgressClasses} from "@mui/material";
 import {FileHeader} from "./FileHeader";
 import { green } from '@mui/material/colors';
 import {styled} from "@mui/material/styles";
+import fileUpoladService from "../../services/FileUpoladService";
 
-export function SingleFileSelectionWithProgress({file, onDelete}) {
+export function SingleFileSelectionWithProgress({file, onDelete, onUpload}) {
     const [progress, setProgress] = useState(0)
 
     const SuccessLinearProgress = styled(LinearProgress)(({ theme }) => ({
@@ -14,7 +15,15 @@ export function SingleFileSelectionWithProgress({file, onDelete}) {
     }));
 
     useEffect(() => {
-        setProgress(100)
+        async function upload() {   //TODO handle errors
+            const fileResp = await fileUpoladService.upload(file, (event) => {
+                setProgress(Math.round((100 * event.loaded) / event.total));
+            })
+            onUpload(file, fileResp.data.url)
+            //console.log('resp: ' + JSON.stringify(fileResp.data.url))
+        }
+
+        upload()
 
     }, [])
     return (

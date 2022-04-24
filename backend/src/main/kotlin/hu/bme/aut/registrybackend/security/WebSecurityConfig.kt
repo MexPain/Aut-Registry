@@ -40,7 +40,7 @@ class WebSecurityConfig(
             .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
             .authorizeRequests()
-            .antMatchers("/api/auth/signin", "/api/auth/signup", "/api/auth/refreshtoken", "/api/users/upload").permitAll()
+            .antMatchers("/api/auth/signin", "/api/auth/signup", "/api/auth/refreshtoken", "/api/files/upload").permitAll()
             .anyRequest().authenticated()
         http.addFilterBefore(authenticationJwtTokenFilter, UsernamePasswordAuthenticationFilter::class.java)
     }

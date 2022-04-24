@@ -21,11 +21,25 @@ const logout = ()=> {
     console.log("Log out successful")
 }
 
-const register = (username, email, password) => {   //TODO ez így még nono...  add additional info (profilePic)
+const register = (
+    username,
+    email,
+    password,
+    description,
+    phone,
+    imageUrl,
+    firstname,
+    lastname,
+    ) => {
     return api.post("/auth/signup", {
         username,
         email,
-        password
+        password,
+        firstname,
+        lastname,
+        description,
+        phone,
+        imageUrl,
     });
 }
 

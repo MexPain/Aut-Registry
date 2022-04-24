@@ -61,7 +61,6 @@ export function FileUploader({name}) {
 
     useEffect(() => {
         helpers.setValue(acceptedFiles, true) //ez a formik images arrayt állítja be
-        console.log("Accepted files: " + acceptedFiles.length)
         if(acceptedFiles.length === 0) {
             setDisabled(false)
         }
@@ -70,6 +69,15 @@ export function FileUploader({name}) {
     function onDelete(file) {
         setFiles(curr => curr.filter(fw => fw.file !== file))
         setAcceptedFiles(curr => curr.filter(fw => fw.file !== file))
+    }
+
+    function onUpload(file, url) {
+        setAcceptedFiles(curr => curr.map(fw => {
+            if(fw.file === file) {
+                return {...fw, url}
+            }
+            return fw
+        }))
     }
 
     return (
@@ -91,13 +99,16 @@ export function FileUploader({name}) {
                         <SingleFileSelectionWithProgress
                             file={fileWrapper.file}
                             onDelete={onDelete}
+                            onUpload={onUpload}
                         />
                     )}
                 </Grid>
             ))}
+            {meta && meta.error && (
             <Typography variant="body2" marginLeft={2} marginTop={3}
                         sx={{color: theme.palette.error.main}}
-            >{meta && meta.error}</Typography>
+            >{meta.error}</Typography>
+            )}
 
         </Grid>
     )

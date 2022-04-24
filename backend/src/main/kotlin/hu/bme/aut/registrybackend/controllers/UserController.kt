@@ -26,43 +26,7 @@ class UserController(
     private val userRepository: UserRepository,
     private val itemRepository: ItemRepository,
     private val itemLendingRepository: ItemLendingRepository,
-    private val fileStorageService: FileStorageService,
 ) {
-    //ez a 2 még a másikból maradt, lehet nem kell majd
-    @PostMapping("/upload")
-    fun uploadFile(@RequestParam("file") file: MultipartFile): ResponseEntity<Any> {
-        var message = ""
-        return try {
-            val savedFile = fileStorageService.store(file)
-            message = "File upload successful"
-            ResponseEntity.status(HttpStatus.OK).body(
-                savedFile.let { FileResponse(
-                    it.id!!, it.name,
-                    ServletUriComponentsBuilder
-                        .fromCurrentContextPath()
-                        .path("/files/")
-                        .path(it.id)
-                        .toUriString(),
-                    it.type,
-                    "${it.data.size.toDouble()/1024} KB",
-                    message
-                ) }
-            )
-        }catch (e: IllegalArgumentException) {
-            message = "Could not upload the file: " + file.originalFilename + "!";
-            ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(
-                MessageResponse(message)
-            )
-        }
-    }
-
-    @GetMapping("/files/{id}")
-    fun getListFiles(@PathVariable id: String): ResponseEntity<ByteArray> {
-        val fileDb = fileStorageService.getFile(id)
-        return ResponseEntity.ok()
-            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileDb.name + "\"")
-            .body(fileDb.data)
-    }
 
 
     @GetMapping("/profile")
