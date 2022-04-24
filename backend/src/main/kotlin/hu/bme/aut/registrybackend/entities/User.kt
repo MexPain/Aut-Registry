@@ -6,11 +6,23 @@ import javax.persistence.*
 @Entity
 @Table(name = "users")
 class User(
+    @Column(nullable = false, unique = true)
     val username: String,
-    @JsonIgnore val password: String,
-    val firstname: String,
-    val lastname: String,
-    //TODO email, phone, ...
+
+    @Column(nullable = false)
+    val email: String,
+
+    @JsonIgnore @Column(nullable = false)
+    val password: String,
+
+    val firstname: String? = null,
+    val lastname: String? = null,
+    val description: String? = null,
+    val phone: String? = null,
+
+    @OneToOne
+    @JoinColumn(name = "image_id", referencedColumnName = "id")
+    val image: FileStorage? = null,
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(	name = "user_roles",
