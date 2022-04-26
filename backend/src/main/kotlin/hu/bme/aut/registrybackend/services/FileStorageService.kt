@@ -17,4 +17,5 @@ class FileStorageService(
     }
 
     fun getFile(id: String): FileStorage = fileStorageRepository.findById(id).get()
+    fun isFileWithIdExists(id: String): Boolean = fileStorageRepository.existsById(id)
 }

@@ -1,10 +1,14 @@
 package hu.bme.aut.registrybackend.entities
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo
 import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.annotation.ObjectIdGenerators
+import hu.bme.aut.registrybackend.entities.Lending.ItemLending
 import javax.persistence.*
 
 @Entity
 @Table(name = "users")
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator::class, property = "id")
 class User(
     @Column(nullable = false, unique = true)
     val username: String,

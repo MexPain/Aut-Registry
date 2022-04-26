@@ -7,5 +7,5 @@ class ProfileResponse(
     val lastname: String?,
     val description: String?,
     val phone: String?,
-    val image: ByteArray?,
+    val imageUrl: String?,
 )

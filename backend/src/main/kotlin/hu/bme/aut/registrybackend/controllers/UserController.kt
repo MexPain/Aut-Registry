@@ -1,23 +1,17 @@
 package hu.bme.aut.registrybackend.controllers
 
-import hu.bme.aut.registrybackend.entities.ItemLending
-import hu.bme.aut.registrybackend.entities.ItemLendingKey
-import hu.bme.aut.registrybackend.payloads.response.FileResponse
-import hu.bme.aut.registrybackend.payloads.response.MessageResponse
+import hu.bme.aut.registrybackend.entities.Lending.ItemLending
+import hu.bme.aut.registrybackend.entities.Lending.ItemLendingKey
 import hu.bme.aut.registrybackend.payloads.response.ProfileResponse
 import hu.bme.aut.registrybackend.repositories.ItemLendingRepository
-import hu.bme.aut.registrybackend.repositories.ItemRepository
+import hu.bme.aut.registrybackend.repositories.item.ItemRepository
 import hu.bme.aut.registrybackend.repositories.UserRepository
 import hu.bme.aut.registrybackend.services.FileStorageService
-import org.springframework.http.HttpHeaders
-import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.userdetails.User
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.web.bind.annotation.*
-import org.springframework.web.multipart.MultipartFile
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder
 import java.util.*
 
 @RestController
@@ -41,7 +35,7 @@ class UserController(
                 userData.username, userData.email,
                 userData.firstname, userData.lastname,
                 userData.description, userData.phone,
-                userData.image?.data,
+                userData.image?.let { "/files/${it.id}" },
                 )
         )
     }
@@ -63,6 +57,8 @@ class UserController(
         itemLendingRepository.save(newItemLending)
         userData.borrowedItems.add(newItemLending)
         val savedData = userRepository.save(userData)
+                    item.borrowedBy.add(newItemLending)
+                    itemRepository.save(item)
         return ResponseEntity.ok(
             savedData
         )

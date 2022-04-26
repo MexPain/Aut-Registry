@@ -1,5 +1,6 @@
 package hu.bme.aut.registrybackend.entities
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import org.hibernate.annotations.GenericGenerator
 import javax.persistence.*
 
@@ -9,6 +10,7 @@ class FileStorage(
     val name: String,
     val type: String,
     @Lob
+    @JsonIgnore
     val data: ByteArray,
 
     @Id
