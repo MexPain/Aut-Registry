@@ -118,7 +118,7 @@ class AuthController(
     @PostMapping("/signin")
     fun authenticateUser(@RequestBody loginRequest: LoginRequest) : ResponseEntity<Any> {
         val authentication = authManager.authenticate(
-            UsernamePasswordAuthenticationToken(loginRequest.email, loginRequest.password)
+            UsernamePasswordAuthenticationToken(loginRequest.username, loginRequest.password)
         )
         SecurityContextHolder.getContext().authentication = authentication
         val jwt = jwtUtils.generateJwtToken(authentication)

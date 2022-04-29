@@ -85,7 +85,6 @@ const Register = () => {
                     validateOnBlur={true}
                     validateOnChange={false}
                     onSubmit={(values, { setSubmitting } )=> {
-                        console.log(values.images)
                         AuthService.register(
                             values.username,
                             values.email,
@@ -106,7 +105,6 @@ const Register = () => {
                         )
                         //add values to service, navigate to login if success
                         //show alert if fail
-                        console.log(values)
                         //setSubmitting(false)
                     }}
                 >{({ values, errors, isValid, isSubmitting }) =>(

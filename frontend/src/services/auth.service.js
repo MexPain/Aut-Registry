@@ -1,7 +1,7 @@
 import api from './api'
 import TokenService from "./token.service";
 
-const login = (username, password)=> { //TODO emailre csere ha backend megvan
+const login = (username, password)=> {
     return api
         .post("/auth/signin", {
             username,
