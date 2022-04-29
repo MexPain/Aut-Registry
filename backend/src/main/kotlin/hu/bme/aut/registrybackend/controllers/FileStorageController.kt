@@ -42,7 +42,7 @@ class FileStorageController(
         }
     }
 
-    @GetMapping("/files/{id}")
+    @GetMapping("/{id}")
     fun getListFiles(@PathVariable id: String): ResponseEntity<ByteArray> {
         val fileDb = fileStorageService.getFile(id)
         return ResponseEntity.ok()

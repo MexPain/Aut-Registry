@@ -11,7 +11,5 @@ const upload = (file, onUploadProgress) => {    //TODO handle errors
     })
 }
 
-const getFiles = () => {    //lehet nincs meg
-    return api.get("/files")
-}
-export default {upload, getFiles}
+
+export default {upload}

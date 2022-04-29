@@ -6,7 +6,6 @@ import hu.bme.aut.registrybackend.payloads.request.itemRequests.NewCategoryReque
 import hu.bme.aut.registrybackend.payloads.request.itemRequests.NewItemRequest
 import hu.bme.aut.registrybackend.payloads.request.itemRequests.NewSubCategoryRequest
 import hu.bme.aut.registrybackend.payloads.response.ErrorMessage
-import hu.bme.aut.registrybackend.payloads.response.ItemListResponse
 import hu.bme.aut.registrybackend.payloads.response.MessageResponse
 import hu.bme.aut.registrybackend.repositories.item.CategoryRepository
 import hu.bme.aut.registrybackend.repositories.item.SubCategoryRepository
@@ -31,7 +30,7 @@ class ItemController(
     fun getAllItems() : ResponseEntity<Any> {
         val items = itemService.findAllItems()
         return ResponseEntity.ok(
-            ItemListResponse(items)
+            items
         )
     }
 
@@ -46,6 +45,8 @@ class ItemController(
         //TODO
         return ResponseEntity.badRequest().body("Not yet implemented")
     }
+
+    //TODO non borrowed
 
     @PostMapping("/add")
     @PreAuthorize("hasRole('ROLE_MODERATOR') or hasRole('ROLE_ADMIN')")
