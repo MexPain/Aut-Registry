@@ -64,6 +64,22 @@ class ItemController(
         }
     }
 
+    @GetMapping("/categories")
+    fun getAllCategories(): ResponseEntity<List<Category>> {
+        val cats = categoryRepository.findAll()
+        return ResponseEntity.ok().body(
+            cats
+        )
+    }
+
+    @GetMapping("/subCategories")
+    fun getAllSubCategories(): ResponseEntity<List<SubCategory>> {
+        val cats = subCategoryRepository.findAll()
+        return ResponseEntity.ok().body(
+            cats
+        )
+    }
+
     @PostMapping("/categories/addCategory")
     @PreAuthorize("hasRole('ROLE_MODERATOR') or hasRole('ROLE_ADMIN')")
     fun addNewCategory(@RequestBody category: NewCategoryRequest): ResponseEntity<Any> {

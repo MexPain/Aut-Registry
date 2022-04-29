@@ -59,6 +59,7 @@ const NavBar = ({isDrawerOpen, handleDrawerOpen}) => {
                     <Grid container sx={{flexGrow: 1, alignItems: "center"}}>
                         <Typography variant="h5" color="inherit" sx={{marginRight: theme.spacing(2)}}>Item registry</Typography>
                         <Button size="large" color="inherit" component={RouterLink} to="/about" sx={{flexShrink: 0}}>About us</Button>
+                        <Button size="large" color="inherit" component={RouterLink} to="/newItem" sx={{flexShrink: 0}}>Add new item</Button>
                     </Grid>
                     {!currentUser &&
                         <Button size="large" color="inherit" component={RouterLink} to="/login" sx={{flexShrink: 0}}>Login</Button>

@@ -12,6 +12,7 @@ import About from "./pages/About";
 import ErrorPage from "./pages/ErrorPage";
 import {UserContext} from "./contexts/UserContext";
 import { styled, useTheme } from '@mui/material/styles';
+import NewItemForm from "./pages/NewItemForm";
 
 const drawerWidth = 240;
 
@@ -34,7 +35,7 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
     }),
 );
 
-const App = () => { //AUTH LINKET ÁTÍRNI!!!!!!
+const App = () => {
 
     const theme = useTheme()
 
@@ -82,6 +83,7 @@ const App = () => { //AUTH LINKET ÁTÍRNI!!!!!!
                     <Route path="/" element={<Home/>}/>
                     <Route path="/home" element={<Home/>}/>
                     <Route path="/about" element={<About/>}/>
+                    <Route path="/newItem" element={<NewItemForm/>}/>
                     <Route path="/user/myItems"
                            element={currentUser ? <BorrowedItemsContent/> : <Navigate to="/login" state={{error: "yes"}}/>}/>
                     <Route path="/user/profile" element={currentUser ? <UserProfile/> : <Navigate to="/login/expired"/>}/>
