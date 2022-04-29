@@ -18,6 +18,7 @@ const SelectField = ({
     const configSelect = {
         ...field,
         ...otherProps,
+        color: 'secondary',
         select: true,
         variant: 'outlined',
         fullWidth: true,
@@ -31,10 +32,10 @@ const SelectField = ({
 
     return (
         <TextField {...configSelect}>
-            {options.map(category => {
+            {options.map(item => {
                 return (
-                    <MenuItem key={category.id} value={category.name}>
-                        {category.name}
+                    <MenuItem key={item.id} value={item.name}>
+                        {item.name}
                     </MenuItem>
                 )
             })}

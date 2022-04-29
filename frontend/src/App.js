@@ -13,6 +13,7 @@ import ErrorPage from "./pages/ErrorPage";
 import {UserContext} from "./contexts/UserContext";
 import { styled, useTheme } from '@mui/material/styles';
 import NewItemForm from "./pages/NewItemForm";
+import AddCategoriesForm from "./pages/AddCategoriesForm";
 
 const drawerWidth = 240;
 
@@ -84,6 +85,7 @@ const App = () => {
                     <Route path="/home" element={<Home/>}/>
                     <Route path="/about" element={<About/>}/>
                     <Route path="/newItem" element={<NewItemForm/>}/>
+                    <Route path="/newCategories" element={<AddCategoriesForm />} />
                     <Route path="/user/myItems"
                            element={currentUser ? <BorrowedItemsContent/> : <Navigate to="/login" state={{error: "yes"}}/>}/>
                     <Route path="/user/profile" element={currentUser ? <UserProfile/> : <Navigate to="/login/expired"/>}/>

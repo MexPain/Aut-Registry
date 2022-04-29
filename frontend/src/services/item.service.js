@@ -15,10 +15,29 @@ const addNewItem = (name, category, subCategory, images, description) => {
     })
 }
 
+const addNewCategory = (name) => {
+    return api.post("/items/categories/addCategory", {
+        name
+    })
+}
+
+const addNewSubCategory = (name, parentCategory) =>{
+    return api.post("/items/categories/addSubCategory", {
+        name, parentCategory
+    })
+}
+
+const getAllItems = () => {
+    return api.get("/items/all")
+}
+
 const ItemService = {
     getCategories,
     getSubCategories,
     addNewItem,
+    addNewCategory,
+    addNewSubCategory,
+    getAllItems,
 }
 
 export default ItemService

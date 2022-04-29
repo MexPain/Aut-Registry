@@ -70,7 +70,6 @@ const NewItemForm = () => {
                     validateOnBlur={true}
                     validateOnChange={false}
                     onSubmit={(values, {setSubmitting}) => {
-                        console.log(values.images[0])
                         ItemService.addNewItem(
                             values.name,
                             values.category,
