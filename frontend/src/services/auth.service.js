@@ -1,68 +1,57 @@
-import axios from "axios";
+import api from './api'
+import TokenService from "./token.service";
 
-const API_URL = "http://localhost:8080/api/users/"
-
-const register = (email, password, firstname, lastname) => {  //TODO add additional info (profilePic)
-    // return axios.post(
-    //     API_URL + "signup",
-    //     {username, password, firstname, lastname})
-
-    //regi registerből:
-    // authService.register(username, password, firstname, lastname).then(
-    //     (response) => {
-    //         setMessage(response.data.message);
-    //         setSuccessful(true);
-    //     },
-    //     (error) => {
-    //         const resMessage =
-    //             (error.response &&
-    //                 error.response.data &&
-    //                 error.response.data.message) ||
-    //             error.message ||
-    //             error.toString();
-    //         setMessage(resMessage);
-    //         setSuccessful(false);
-    //     }
-    // )
-
-    console.log("User registered: " + firstname+ " " + lastname + " with email: " + email)
-
-    return {    //TODO temp + talán már itt lekezelni a promise-t, mint a loginnal
-        id: 10,
-        email: email,
-        password: password,
-        firstname: firstname,
-        lastname: lastname,
-        profilePic: "/images/yt.png",
-        roles: ["user"]
-    }
-
-}
-
-const login = (username, password) => {
-    return axios.post(
-        API_URL + "signin",
-        {username, password})
-        .then((response) => {
-            console.log(`Login request successful, response data: ${response.data}`)
+const login = (username, password)=> { //TODO emailre csere ha backend megvan
+    return api
+        .post("/auth/signin", {
+            username,
+            password
+        })
+        .then(response => {
             if (response.data.token) {
-                localStorage.setItem("user", JSON.stringify(response.data)) //TODO attol fugg mit ad vissza
+                TokenService.setUser(response.data)
             }
+            console.log(`Login request successful, response data: ${response.data}`)
             return response.data
         })
-        .catch((error) => {
-            console.log(error)
-        })
 }
 
-const logout = () => {
-    localStorage.removeItem("user")
+const logout = ()=> {
+    TokenService.removeUser()
     console.log("Log out successful")
 }
 
-const getCurrentUser = () => {
-    let user = JSON.parse(localStorage.getItem("user"))
-    return (user && user.token) || undefined;
-};
+const register = (
+    username,
+    email,
+    password,
+    description,
+    phone,
+    imageUrl,
+    firstname,
+    lastname,
+    ) => {
+    return api.post("/auth/signup", {
+        username,
+        email,
+        password,
+        firstname,
+        lastname,
+        description,
+        phone,
+        imageUrl,
+    });
+}
 
-export default {register, login, logout, getCurrentUser}
+const getCurrentUser = ()=> {
+    return TokenService.getUser();
+}
+
+const AuthService = {
+    register,
+    login,
+    logout,
+    getCurrentUser,
+}
+
+export default AuthService

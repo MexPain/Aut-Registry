@@ -1,7 +1,11 @@
 package hu.bme.aut.registrybackend.payloads.response
 
-data class ProfileResponse( //TODO additional info
+class ProfileResponse(
     val username: String,
-    val firstname: String,
-    val lastname: String
+    val email: String,
+    val firstname: String?,
+    val lastname: String?,
+    val description: String?,
+    val phone: String?,
+    val imageUrl: String?,
 )

@@ -1,16 +1,10 @@
 import React from 'react';
-import {makeStyles} from '@material-ui/core/styles';
-import Popover from '@material-ui/core/Popover';
-import Typography from '@material-ui/core/Typography';
+import {useTheme} from "@mui/material/styles";
+import {Popover, Typography} from "@mui/material";
 
-const useStyles = makeStyles((theme) => ({
-    typography: {
-        padding: theme.spacing(2),
-    },
-}));
 
 export default function Popup({anchorEl, handleClose}) {
-    const classes = useStyles();
+    const theme = useTheme()
     //const [anchorEl, setAnchorEl] = React.useState(null);
 
     const open = Boolean(anchorEl);
@@ -31,7 +25,7 @@ export default function Popup({anchorEl, handleClose}) {
                 horizontal: 'center',
             }}
         >
-            <Typography className={classes.typography}>The content of the Popover.</Typography>
+            <Typography sx={{padding: theme.spacing(2)}}>The content of the Popover.</Typography>
         </Popover>
     );
 }

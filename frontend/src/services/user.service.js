@@ -1,15 +1,11 @@
-import axios from "axios";
-import authHeader from "./auth-header";
-const API_URL = "http://localhost:8080/api/users/"
+import api from './api'
 
-const getCurrentUser = () => {
-    return JSON.parse(localStorage.getItem("user"))
+class UserService {
+    // csak egy pelda
+    getPublicContent() {
+        return api.get('/test/all');
+    }
+    //TODO get all info about user, not just auth stuff, like in authservice
+    //de hogy jon e ide még valami vagy menjen minden az authba az ???
 }
-
-// const getProfileDetails = () => {
-//     return axios.get(API_URL + "profile", { headers: authHeader()})
-// }
-
-//TODO lend item, ...
-
-export default {getCurrentUser}
+export default new UserService()

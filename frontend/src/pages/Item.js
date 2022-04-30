@@ -1,52 +1,38 @@
-import {ButtonBase, Grid, makeStyles, Paper, Typography} from "@material-ui/core";
+import {Box, ButtonBase, Grid, Link, Paper, Typography} from "@mui/material";
+import {styled, useTheme} from "@mui/material/styles";
+import {Link as RouterLink} from "react-router-dom"
 
-
-const useStyles = makeStyles((theme) => ({
-    image: {
-        width: 128,
-        height: 128,
-        marginRight: theme.spacing(2)
-    },
-    img: {
-        margin: 'auto',
-        display: 'block',
-        maxWidth: '100%',
-        maxHeight: '100%',
-    },
-    paper: {
-        marginBottom: theme.spacing(2)
-    },
-}))
+const ImgStyled = styled('img')(({theme}) => ({
+    margin: 'auto',
+    display: 'block',
+    maxWidth: '100%',
+    maxHeight: '100%',
+}));
 
 const Item = (props) => {
-
+    const theme = useTheme()
     const {image, name, category, description} = props
-    const classes = useStyles()
 
-    const handleClick = () => {
-        console.log(`Ez az ${name} nevű item`)
-    }
 
     return (
-        <Grid container item xs={12} md={5} component={Paper} className={classes.paper} onClick={handleClick}>
-            <Grid item>
-                <ButtonBase className={classes.image}>
-                    <img className={classes.img} alt="complex" src={`/images/${image}.png`}/>
+        <Grid container flexShrink={0} item xs={12} md={5} justifyContent="center" component={Paper} sx={{marginBottom: theme.spacing(2)}}>
+            <Grid item paddingBottom={theme.spacing(2)}>
+                <ButtonBase sx={{width: 128, height: 128, marginRight: theme.spacing(2)}}>
+                    <ImgStyled alt="complex" src={`/images/${image}.png`}/>
                 </ButtonBase>
             </Grid>
-            <Grid item xs={12} sm container>
-                <Grid item xs>
-                    <Typography gutterBottom variant="subtitle1">
+            <Grid item xs={12} sm>
+                <Box sx={{typography: "subtitle1"}}>
+                    <Link color="secondary" component={RouterLink} to="">
                         {name}
-                    </Typography>
-                    <Typography variant="body2" gutterBottom>
-                        Category: {category}
-                    </Typography>
-                    <Typography variant="body2" color="textSecondary">
-                        {description.length > 100 ? `${description.substring(0, 100)}...` : description}
-                    </Typography>
-                </Grid>
-
+                    </Link>
+                </Box>
+                <Typography variant="subtitle2" gutterBottom>
+                    Category: {category}
+                </Typography>
+                <Typography variant="body2" color="textSecondary">
+                    {description.length > 100 ? `${description.substring(0, 100)}...` : description}
+                </Typography>
             </Grid>
         </Grid>
     )

@@ -1,95 +1,112 @@
 package hu.bme.aut.registrybackend.controllers
 
 import hu.bme.aut.registrybackend.entities.ERole
-import hu.bme.aut.registrybackend.entities.ItemLending
-import hu.bme.aut.registrybackend.entities.ItemLendingKey
+import hu.bme.aut.registrybackend.entities.FileStorage
 import hu.bme.aut.registrybackend.entities.Role
 import hu.bme.aut.registrybackend.payloads.request.LoginRequest
 import hu.bme.aut.registrybackend.payloads.request.SignupRequest
 import hu.bme.aut.registrybackend.payloads.request.TokenRefreshRequest
+import hu.bme.aut.registrybackend.payloads.response.ErrorMessage
 import hu.bme.aut.registrybackend.payloads.response.JwtResponse
 import hu.bme.aut.registrybackend.payloads.response.MessageResponse
-import hu.bme.aut.registrybackend.payloads.response.ProfileResponse
 import hu.bme.aut.registrybackend.payloads.response.TokenRefreshResponse
-import hu.bme.aut.registrybackend.repositories.ItemLendingRepository
-import hu.bme.aut.registrybackend.repositories.ItemRepository
 import hu.bme.aut.registrybackend.repositories.RoleRepository
 import hu.bme.aut.registrybackend.repositories.UserRepository
 import hu.bme.aut.registrybackend.security.jwt.JwtUtils
 import hu.bme.aut.registrybackend.security.services.RefreshTokenService
+import hu.bme.aut.registrybackend.services.FileStorageService
 import hu.bme.aut.registrybackend.utils.TokenRefreshException
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.userdetails.User
-import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.crypto.password.PasswordEncoder
-import org.springframework.web.bind.annotation.CrossOrigin
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
+import org.springframework.web.multipart.MultipartFile
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder
 import java.util.*
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/api/auth")
 class AuthController(
     private val userRepository: UserRepository,
     private val roleRepository: RoleRepository,
-    private val itemRepository: ItemRepository,
-    private val itemLendingRepository: ItemLendingRepository,
     private val passwordEncoder: PasswordEncoder,
     private val jwtUtils: JwtUtils,
     private val authManager: AuthenticationManager,
-    private val refreshTokenService: RefreshTokenService
+    private val refreshTokenService: RefreshTokenService,
+    private val fileStorageService: FileStorageService,
 ) {
 
     @PostMapping("/signup")
     fun registerUser(
         @RequestBody signupRequest: SignupRequest
     ): ResponseEntity<Any> {
-
+        //check if user already exists
         if(userRepository.existsByUsername(signupRequest.username)) {
             return ResponseEntity
                 .badRequest()
                 .body(MessageResponse("Error: Username is already taken!"))
         }
 
-        val user = signupRequest.let {
-            hu.bme.aut.registrybackend.entities.User(it.username,
-                passwordEncoder.encode(it.password),
-                it.firstname, it.lastname)
+        //handling the image
+        var image: FileStorage? = null
+        signupRequest.imageUrl?.let {
+            val imageId = it.split("/").last()
+            image = fileStorageService.getFile(imageId)
         }
+
+        //creating new user
+        val user = signupRequest.let {
+            hu.bme.aut.registrybackend.entities.User(
+                username = it.username,
+                email = it.email,
+                password = passwordEncoder.encode(it.password),
+                firstname = it.firstname, lastname = it.lastname,
+                description = it.description, phone = it.phone,
+                image = image,
+            )
+        }
+        //configuring user's roles
         val strRoles = signupRequest.roles
         val roles: MutableSet<Role> = hashSetOf()
-        if(strRoles.isEmpty()) {
-            val userRole = roleRepository.findByName(ERole.ROLE_USER)
-                ?: throw RuntimeException("Error: Role is not found")
-            roles.add(userRole)
-        }else{
-            strRoles.forEach {
-                when(it) {
-                    "admin"-> {
-                        val adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
-                            ?: throw RuntimeException("Error: Role is not found")
-                        roles.add(adminRole)
-                    }
-                    "mod" -> {
-                        val modRole = roleRepository.findByName(ERole.ROLE_MODERATOR)
-                            ?: throw RuntimeException("Error: Role is not found")
-                        roles.add(modRole)
-                    }
-                    else -> {
-                        val userRole = roleRepository.findByName(ERole.ROLE_USER)
-                            ?: throw RuntimeException("Error: Role is not found")
-                        roles.add(userRole)
+        try{
+            if(strRoles.isEmpty()) {
+                val userRole = roleRepository.findByName(ERole.ROLE_USER)
+                    ?: throw RuntimeException("Error: Role is not found")
+                roles.add(userRole)
+            }else{
+                strRoles.forEach {
+                    when(it) {
+                        "admin"-> {
+                            val adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
+                                ?: throw RuntimeException("Error: Role is not found")
+                            roles.add(adminRole)
+                        }
+                        "mod" -> {
+                            val modRole = roleRepository.findByName(ERole.ROLE_MODERATOR)
+                                ?: throw RuntimeException("Error: Role is not found")
+                            roles.add(modRole)
+                        }
+                        else -> {
+                            val userRole = roleRepository.findByName(ERole.ROLE_USER)
+                                ?: throw RuntimeException("Error: Role is not found")
+                            roles.add(userRole)
+                        }
                     }
                 }
             }
+        }catch (e: RuntimeException) {
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(
+                ErrorMessage(
+                    HttpStatus.EXPECTATION_FAILED.value(),
+                    Date(),
+                    e.message,
+                    ServletUriComponentsBuilder.fromCurrentContextPath().toUriString()
+                )
+            )
         }
         user.roles = roles
         userRepository.save(user)
@@ -101,7 +118,7 @@ class AuthController(
     @PostMapping("/signin")
     fun authenticateUser(@RequestBody loginRequest: LoginRequest) : ResponseEntity<Any> {
         val authentication = authManager.authenticate(
-            UsernamePasswordAuthenticationToken(loginRequest.username, loginRequest.password)
+            UsernamePasswordAuthenticationToken(loginRequest.email, loginRequest.password)
         )
         SecurityContextHolder.getContext().authentication = authentication
         val jwt = jwtUtils.generateJwtToken(authentication)
@@ -127,46 +144,7 @@ class AuthController(
         }else{
             throw TokenRefreshException(request.refreshToken,
                 "Refresh token is not in database!")
-//            return ResponseEntity
-//                .badRequest()
-//                .body("Bla bla bla")
         }
 
-    }
-
-    @GetMapping("/profile")
-//    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
-    fun getUserProfile() : ResponseEntity<Any> {
-        val user: User = SecurityContextHolder.getContext().authentication.principal as User
-        val userData = userRepository.findByUsername(user.username)
-            ?: throw UsernameNotFoundException("Logged in profile was not found")
-
-        return ResponseEntity.ok(
-            ProfileResponse(userData.username,
-            userData.firstname, userData.lastname)
-//        userData    //temp debug
-        )
-    }
-
-    @PostMapping("/lend/{itemId}")
-    fun lendItemToCurrentUser(@PathVariable itemId: Long): ResponseEntity<Any> {
-        val item = itemRepository.findById(itemId).get()
-        val user = SecurityContextHolder.getContext().authentication.principal as User
-        val userData = userRepository.findByUsername(user.username)
-            ?: throw UsernameNotFoundException("Logged in profile was not found")
-
-        val newItemLending = ItemLending(
-            item = item,
-            user = userData,
-            Date(),
-            Date((Date()).time + 18_000_000L),
-            ItemLendingKey(item.id, userData.id)
-        )
-        itemLendingRepository.save(newItemLending)
-        userData.borrowedItems.add(newItemLending)
-        val savedData = userRepository.save(userData)
-        return ResponseEntity.ok(
-            savedData
-        )
     }
 }

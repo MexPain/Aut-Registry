@@ -1,6 +1,7 @@
-package hu.bme.aut.registrybackend.entities
+package hu.bme.aut.registrybackend.entities.Lending
 
-import com.fasterxml.jackson.annotation.JsonIgnore
+import hu.bme.aut.registrybackend.entities.Item.Item
+import hu.bme.aut.registrybackend.entities.User
 import java.util.Date
 import javax.persistence.*
 

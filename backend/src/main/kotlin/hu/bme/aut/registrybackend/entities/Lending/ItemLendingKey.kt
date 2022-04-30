@@ -1,4 +1,4 @@
-package hu.bme.aut.registrybackend.entities
+package hu.bme.aut.registrybackend.entities.Lending
 
 import javax.persistence.Column
 import javax.persistence.Embeddable
