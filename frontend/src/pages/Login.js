@@ -30,14 +30,13 @@ const Login = ({error}) => {    //TODO navigation error messages
     const theme = useTheme()
 
     const initialValues = {
-        email: "",
+        username: "",
         password: "",
     }
 
     const validationSchema = Yup.object().shape({
-        email: Yup.string()
-            // .email("Invalid email address")
-            .required("Email address is required"),
+        username: Yup.string()
+            .required("Username is required"),
         password: Yup.string()
             .required("Password is required"),
     })
@@ -97,7 +96,7 @@ const Login = ({error}) => {    //TODO navigation error messages
                         if (!loading) {
                             setLoading(true)
                             login(
-                                values.email,
+                                values.username,
                                 values.password,
                                 () => {
                                     setLoading(false)
@@ -113,9 +112,9 @@ const Login = ({error}) => {    //TODO navigation error messages
                         <Grid container>
                             <Grid item xs={12}>
                                 <FormTextField
-                                    name="email"
-                                    label="Email"
-                                    autoComplete="email"
+                                    name="username"
+                                    label="Username"
+                                    autoComplete="username"
                                     autoFocus
                                 />
                             </Grid>

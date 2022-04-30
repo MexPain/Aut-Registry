@@ -1,5 +1,6 @@
 package hu.bme.aut.registrybackend.services
 
+import hu.bme.aut.registrybackend.entities.FileStorage
 import hu.bme.aut.registrybackend.entities.Item.Item
 import hu.bme.aut.registrybackend.entities.User
 import hu.bme.aut.registrybackend.payloads.request.itemRequests.NewItemRequest
@@ -58,16 +59,20 @@ class ItemService(
             if( subCategoryRepository.existsSubCategoryByName(item.subCategory)) {
                 val cat = categoryRepository.findByName(item.category)
                 val subCat = subCategoryRepository.findByName(item.subCategory)
-                if(!fileStorageService.isFileWithIdExists(item.imageId))
-                    throw NoSuchElementException("File id is invalid")
-                val image = fileStorageService.getFile(item.imageId)
+
+                //handling the image
+                var image: FileStorage? = null
+                item.imageUrl?.let {
+                    val imageId = it.split("/").last()
+                    image = fileStorageService.getFile(imageId)
+                }
 
                 val newItem = itemRepository.save(Item(
                     name = item.name,
                     createdAt = Date(),
                     category = cat,
                     subCategory = subCat,
-                    image = image,
+                    image = image!!,
                     description = item.description
                 ))
                 return findItem(newItem.id!!)

@@ -3,7 +3,7 @@ import {Grid, LinearProgress, linearProgressClasses} from "@mui/material";
 import {FileHeader} from "./FileHeader";
 import { green } from '@mui/material/colors';
 import {styled} from "@mui/material/styles";
-import fileUpoladService from "../../services/FileUpoladService";
+import fileUpoladService from "../../services/FileService";
 
 export function SingleFileSelectionWithProgress({file, onDelete, onUpload}) {
     const [progress, setProgress] = useState(0)

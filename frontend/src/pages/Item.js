@@ -18,7 +18,7 @@ const Item = (props) => {
         <Grid container flexShrink={0} item xs={12} md={5} justifyContent="center" component={Paper} sx={{marginBottom: theme.spacing(2)}}>
             <Grid item paddingBottom={theme.spacing(2)}>
                 <ButtonBase sx={{width: 128, height: 128, marginRight: theme.spacing(2)}}>
-                    <ImgStyled alt="complex" src={`/images/${image}.png`}/>
+                    <ImgStyled alt="complex" src={`${image}`}/>
                 </ButtonBase>
             </Grid>
             <Grid item xs={12} sm>

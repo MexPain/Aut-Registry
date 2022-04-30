@@ -4,6 +4,6 @@ data class NewItemRequest(
     val name: String,
     val category: String,
     val subCategory: String,
-    val imageId: String,
+    val imageUrl: String? = null,
     val description: String? = null,
 )
