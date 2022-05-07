@@ -1,10 +1,10 @@
 package hu.bme.aut.registrybackend.security.jwt
 
+import hu.bme.aut.registrybackend.security.services.UserDetailsImpl
 import io.jsonwebtoken.*
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.core.Authentication
-import org.springframework.security.core.userdetails.User
 import org.springframework.stereotype.Component
 import java.util.*
 
@@ -20,7 +20,7 @@ class JwtUtils(
     }
 
     fun generateJwtToken(authentication: Authentication): String {
-        val userPrincipal: User = authentication.principal as User
+        val userPrincipal: UserDetailsImpl = authentication.principal as UserDetailsImpl
         return generateTokenFromUsername(userPrincipal.username)
     }
 

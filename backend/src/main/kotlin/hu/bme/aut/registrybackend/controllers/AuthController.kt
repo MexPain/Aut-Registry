@@ -14,6 +14,7 @@ import hu.bme.aut.registrybackend.repositories.RoleRepository
 import hu.bme.aut.registrybackend.repositories.UserRepository
 import hu.bme.aut.registrybackend.security.jwt.JwtUtils
 import hu.bme.aut.registrybackend.security.services.RefreshTokenService
+import hu.bme.aut.registrybackend.security.services.UserDetailsImpl
 import hu.bme.aut.registrybackend.services.FileStorageService
 import hu.bme.aut.registrybackend.utils.TokenRefreshException
 import org.springframework.http.HttpStatus
@@ -21,12 +22,11 @@ import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
-import org.springframework.security.core.userdetails.User
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.web.bind.annotation.*
-import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder
 import java.util.*
+import kotlin.streams.toList
 
 @RestController
 @RequestMapping("/api/auth")
@@ -123,11 +123,12 @@ class AuthController(
         SecurityContextHolder.getContext().authentication = authentication
         val jwt = jwtUtils.generateJwtToken(authentication)
 
-        val userDetails: User = authentication.principal as User
+        val userDetails: UserDetailsImpl = authentication.principal as UserDetailsImpl
         val refreshToken = refreshTokenService.createRefreshToken(userDetails.username)
-//        val roles = userDetails.authorities.stream()
-//            .map { it.authority }.toList()
-        return ResponseEntity.ok(JwtResponse(jwt, refreshToken.token))
+        val roles = userDetails.authorities.stream()
+            .map { it.authority }.toList()
+        return ResponseEntity.ok(JwtResponse(jwt, refreshToken.token, userDetails.firstname,
+            userDetails.lastname,userDetails.email, roles))
     }
 
     @PostMapping("/refreshtoken")
