@@ -1,4 +1,4 @@
-import Item from "./Item";
+import Item from "../components/Item";
 import {useEffect, useState} from "react";
 import {Box, Grid, Paper} from "@mui/material";
 import {useTheme} from "@mui/material/styles";
@@ -13,7 +13,6 @@ const Home = () => {
     useEffect(() => {
         ItemService.getAllItems()
             .then((success)=> {
-                console.log(...success.data)
                 setItems([...success.data])
             }, (error) => {
                 console.log(error)

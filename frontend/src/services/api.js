@@ -1,5 +1,6 @@
 import axios from "axios";
 import TokenService from "./token.service";
+import EventBus from "./auth/EventBus";
 
 const instance = axios.create({
     baseURL: "http://localhost:8080/api",
@@ -38,6 +39,7 @@ instance.interceptors.response.use(
                     TokenService.updateLocalAccessToken(accessToken);
                     return instance(originalConfig);
                 } catch (_error) {
+                    EventBus.dispatch("logout")
                     return Promise.reject(_error)
                 }
             }

@@ -1,4 +1,4 @@
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {Route, Routes, Navigate} from "react-router-dom";
 import NavBar from "./components/NavBar";
 import Home from "./pages/Home";
@@ -14,6 +14,7 @@ import {UserContext} from "./contexts/UserContext";
 import { styled, useTheme } from '@mui/material/styles';
 import NewItemForm from "./pages/NewItemForm";
 import AddCategoriesForm from "./pages/AddCategoriesForm";
+import EventBus from "./services/auth/EventBus";
 
 const drawerWidth = 240;
 
@@ -60,7 +61,6 @@ const App = () => {
         )
     }
     const logOut = () => {
-
         authService.logout()
         setDrawerOpen(false)
         setCurrentUser(undefined)
@@ -74,6 +74,15 @@ const App = () => {
 
     const [drawerOpen, setDrawerOpen] = useState(false)
     const [currentUser, setCurrentUser] = useState(initUser)
+
+    useEffect( () => {
+        EventBus.on("logout", () => {
+            logOut();
+        });
+        return () => {
+            EventBus.remove("logout");
+        };
+    }, [])
 
     return (
         <UserContext.Provider value={{currentUser, login, logOut}}>
@@ -94,7 +103,6 @@ const App = () => {
                     <Route path="*" element={<ErrorPage/>}/>
                 </Routes>
             </Main>
-
         </UserContext.Provider>
     )
 }
