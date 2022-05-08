@@ -67,7 +67,7 @@ const Drawer = ({isDrawerOpen, handleDrawerClose}) => {
             <List component="nav" aria-label="main-content-nav">
                 <ListItemLink
                     to="/home"
-                    primary="News"
+                    primary="Home"
                     icon={<InboxIcon />}
                     selected={location.pathname === "/home"}
                 />
@@ -85,6 +85,23 @@ const Drawer = ({isDrawerOpen, handleDrawerClose}) => {
                 />
             </List>
             <Divider />
+            {currentUser && currentUser.roles.includes("ROLE_MODERATOR") && (<>
+                <List component="nav" aria-label="main-content-nav">
+                    <ListItemLink
+                        to="/newItem"
+                        primary="Add new item"
+                        icon={<InboxIcon />}
+                        selected={location.pathname === "/home"}
+                    />
+                    <ListItemLink
+                        to="/newCategories"
+                        primary="Add new categories"
+                        icon={<InboxIcon />}
+                        selected={location.pathname === "/user/myItems"}
+                    />
+                </List>
+                <Divider />
+            </>)}
             <List component="nav" aria-label="user-settings">
                 <ListItemLink to="/user/profile" primary="Profile settings" icon={<InboxIcon />}
                               selected={location.pathname === "/user/profile"} />

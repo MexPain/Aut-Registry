@@ -5,6 +5,7 @@ import hu.bme.aut.registrybackend.entities.Item.Item
 import hu.bme.aut.registrybackend.entities.User
 import hu.bme.aut.registrybackend.payloads.request.itemRequests.NewItemRequest
 import hu.bme.aut.registrybackend.payloads.response.ItemResponse
+import hu.bme.aut.registrybackend.repositories.ItemLendingRepository
 import hu.bme.aut.registrybackend.repositories.item.CategoryRepository
 import hu.bme.aut.registrybackend.repositories.item.ItemRepository
 import hu.bme.aut.registrybackend.repositories.item.SubCategoryRepository
@@ -18,6 +19,7 @@ class ItemService(
     private val categoryRepository: CategoryRepository,
     private val subCategoryRepository: SubCategoryRepository,
     private val fileStorageService: FileStorageService,
+    private val itemLendingRepository: ItemLendingRepository,
 ) {
     fun findAllItems(): List<ItemResponse> {
         val dbItems = itemRepository.findAll()
@@ -84,6 +86,20 @@ class ItemService(
         }
 
 
+    }
+
+    fun findAllNonBorrowedItems(): List<Item> {
+        //lekérni az összes item-t
+        val items = itemRepository.findAll()
+
+        //lekérni az összes itemlending item_id-t disticten
+        val refIds = itemLendingRepository.findAllItemIdsDistinct()
+
+        //az elsőből kiválogatni, aki nincs benne a 2.ban
+        val filtered = items.filter {
+            !refIds.contains(it.id)
+        }
+        return filtered
     }
 
 }

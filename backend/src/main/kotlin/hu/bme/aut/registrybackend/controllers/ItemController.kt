@@ -6,6 +6,7 @@ import hu.bme.aut.registrybackend.payloads.request.itemRequests.NewCategoryReque
 import hu.bme.aut.registrybackend.payloads.request.itemRequests.NewItemRequest
 import hu.bme.aut.registrybackend.payloads.request.itemRequests.NewSubCategoryRequest
 import hu.bme.aut.registrybackend.payloads.response.ErrorMessage
+import hu.bme.aut.registrybackend.payloads.response.ItemResponse
 import hu.bme.aut.registrybackend.payloads.response.MessageResponse
 import hu.bme.aut.registrybackend.repositories.item.CategoryRepository
 import hu.bme.aut.registrybackend.repositories.item.SubCategoryRepository
@@ -46,7 +47,16 @@ class ItemController(
         return ResponseEntity.badRequest().body("Not yet implemented")
     }
 
-    //TODO non borrowed
+    @GetMapping("/available")
+    fun getNonBorrowedItems(): ResponseEntity<List<ItemResponse>> {
+        val result = itemService.findAllNonBorrowedItems()
+        val items: List<ItemResponse> = result.map {
+            ItemResponse(it.id!!, it.name, it.createdAt, it.category.name, it.subCategory.name,
+                "/files/${it.image.id}", it.description, it.borrowedBy)
+        }
+
+        return ResponseEntity.ok().body(items)
+    }
 
     @PostMapping("/add")
     @PreAuthorize("hasRole('ROLE_MODERATOR') or hasRole('ROLE_ADMIN')")

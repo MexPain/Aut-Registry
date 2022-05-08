@@ -11,8 +11,9 @@ const Home = () => {
     const imgHeader = "http://localhost:8080/api"
 
     useEffect(() => {
-        ItemService.getAllItems()
+        ItemService.getAvailableItems()
             .then((success)=> {
+                console.log(success.data)
                 setItems([...success.data])
             }, (error) => {
                 console.log(error)
@@ -24,7 +25,7 @@ const Home = () => {
             <Paper sx={{padding: 2, margin: 'auto',}}>
                 <Grid container spacing={2} justifyContent={"space-around"} marginTop={2}>
                     {items.map( (item) => (
-                        <Item key={item.id} image={`${imgHeader}${item.images}` || `not-found`} name={item.name}
+                        <Item key={item.id} id={item.id} image={`${imgHeader}${item.images}` || `not-found`} name={item.name}
                               category={item.category} description={item.description}/>
                     ))}
                 </Grid>

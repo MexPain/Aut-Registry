@@ -35,6 +35,10 @@ const getItemById = (id) => {
     return api.get(`/items/${id}`)
 }
 
+const getAvailableItems = () => {
+    return api.get("/items/available")
+}
+
 const ItemService = {
     getCategories,
     getSubCategories,
@@ -43,6 +47,7 @@ const ItemService = {
     addNewSubCategory,
     getAllItems,
     getItemById,
+    getAvailableItems,
 }
 
 export default ItemService
