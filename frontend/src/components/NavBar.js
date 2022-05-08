@@ -1,8 +1,8 @@
 import {useContext, useEffect, useState} from "react";
-import {Link as RouterLink} from "react-router-dom";
+import {Link as RouterLink, useNavigate} from "react-router-dom";
 import {UserContext} from "../contexts/UserContext";
 import Popup from "./Popup";
-import {AppBar as MuiAppBar, Box, Button, Grid, IconButton, Toolbar, Typography} from '@mui/material';
+import {AppBar as MuiAppBar, Box, Button, ButtonBase, Grid, IconButton, Toolbar, Typography} from '@mui/material';
 import {styled, useTheme} from "@mui/material/styles";
 import MenuIcon from '@mui/icons-material/Menu';
 import {AccountCircle} from "@mui/icons-material";
@@ -28,11 +28,16 @@ const AppBarStyled = styled(MuiAppBar, {
 
 const NavBar = ({isDrawerOpen, handleDrawerOpen}) => {
     const theme = useTheme()
+    const navigate = useNavigate()
     const {currentUser, login, logOut} = useContext(UserContext)
     const [profilePopup, setProfilePopup] = useState(null)
 
     const profileClick = (event) => {
         setProfilePopup(event.currentTarget)
+    }
+
+    function iconClicked() {
+        navigate("/home")
     }
 
     return (
@@ -50,17 +55,17 @@ const NavBar = ({isDrawerOpen, handleDrawerOpen}) => {
                         <MenuIcon />
                     </IconButton>
                     }
-                    <Box
-                        sx={{height: 40, marginRight: theme.spacing(2)}}
-                        component="img"
-                        alt={"logo img"}
-                        src={"/images/aut.png"}
-                    />
+                    <ButtonBase sx={{height: 40, marginRight: theme.spacing(2)}} onClick={iconClicked}>
+                        <img alt={"logo img"} src={"/images/aut.png"}/>
+                    </ButtonBase>
                     <Grid container sx={{flexGrow: 1, alignItems: "center"}}>
                         <Typography variant="h5" color="inherit" sx={{marginRight: theme.spacing(2)}}>Item registry</Typography>
                         <Button size="large" color="inherit" component={RouterLink} to="/about" sx={{flexShrink: 0}}>About us</Button>
-                        <Button size="large" color="inherit" component={RouterLink} to="/newItem" sx={{flexShrink: 0}}>Add items</Button>
-                        <Button size="large" color="inherit" component={RouterLink} to="/newCategories" sx={{flexShrink: 0}}>Add categories</Button>
+                        {currentUser && currentUser.roles.includes("ROLE_MODERATOR") && (<>
+                            <Button size="large" color="inherit" component={RouterLink} to="/newItem"
+                                    sx={{flexShrink: 0}}>Add items</Button>
+                            <Button size="large" color="inherit" component={RouterLink} to="/newCategories" sx={{flexShrink: 0}}>Add categories</Button>
+                            </>)}
                     </Grid>
                     {!currentUser &&
                         <Button size="large" color="inherit" component={RouterLink} to="/login" sx={{flexShrink: 0}}>Login</Button>

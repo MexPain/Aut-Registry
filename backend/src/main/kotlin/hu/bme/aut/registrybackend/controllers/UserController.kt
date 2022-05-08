@@ -2,14 +2,14 @@ package hu.bme.aut.registrybackend.controllers
 
 import hu.bme.aut.registrybackend.entities.Lending.ItemLending
 import hu.bme.aut.registrybackend.entities.Lending.ItemLendingKey
+import hu.bme.aut.registrybackend.payloads.response.MessageResponse
 import hu.bme.aut.registrybackend.payloads.response.ProfileResponse
 import hu.bme.aut.registrybackend.repositories.ItemLendingRepository
 import hu.bme.aut.registrybackend.repositories.item.ItemRepository
 import hu.bme.aut.registrybackend.repositories.UserRepository
-import hu.bme.aut.registrybackend.services.FileStorageService
+import hu.bme.aut.registrybackend.security.services.UserDetailsImpl
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.context.SecurityContextHolder
-import org.springframework.security.core.userdetails.User
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.web.bind.annotation.*
 import java.util.*
@@ -26,7 +26,7 @@ class UserController(
     @GetMapping("/profile")
 //    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")  //ez nem kell ha mind3 lehet, csak ha kevesebb
     fun getUserProfile() : ResponseEntity<Any> {
-        val user: User = SecurityContextHolder.getContext().authentication.principal as User
+        val user: UserDetailsImpl = SecurityContextHolder.getContext().authentication.principal as UserDetailsImpl
         val userData = userRepository.findByUsername(user.username)
             ?: throw UsernameNotFoundException("Logged in profile was not found")
 
@@ -43,10 +43,14 @@ class UserController(
     @PostMapping("/lend/{itemId}")
     fun lendItemToCurrentUser(@PathVariable itemId: Long): ResponseEntity<Any> {
         val item = itemRepository.findById(itemId).get()
-        val user = SecurityContextHolder.getContext().authentication.principal as User
+        val user = SecurityContextHolder.getContext().authentication.principal as UserDetailsImpl
         val userData = userRepository.findByUsername(user.username)
             ?: throw UsernameNotFoundException("Logged in profile was not found")
-
+        if(itemLendingRepository.isItemWithIdBorrowByUserWithId(itemId, userData.id!!)) {
+            return ResponseEntity.badRequest().body(
+                MessageResponse("Item is already borrowed by ${userData.username}")
+            )
+        }
         val newItemLending = ItemLending(
             item = item,
             user = userData,

@@ -15,6 +15,7 @@ import { styled, useTheme } from '@mui/material/styles';
 import NewItemForm from "./pages/NewItemForm";
 import AddCategoriesForm from "./pages/AddCategoriesForm";
 import EventBus from "./services/auth/EventBus";
+import {ItemDetails} from "./pages/ItemDetails";
 
 const drawerWidth = 240;
 
@@ -101,6 +102,7 @@ const App = () => {
                     <Route path="/register" element={<Register/>}/>
                     <Route path="/login/*" element={<Login/>}/>
                     <Route path="*" element={<ErrorPage/>}/>
+                    <Route path="/items/:id" element={<ItemDetails />} />
                 </Routes>
             </Main>
         </UserContext.Provider>

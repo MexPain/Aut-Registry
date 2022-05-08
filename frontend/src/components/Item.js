@@ -11,7 +11,7 @@ const ImgStyled = styled('img')(({theme}) => ({
 
 const Item = (props) => {
     const theme = useTheme()
-    const {image, name, category, description} = props
+    const {id, image, name, category, description} = props
 
 
     return (
@@ -23,7 +23,7 @@ const Item = (props) => {
             </Grid>
             <Grid item xs={12} sm>
                 <Box sx={{typography: "subtitle1"}}>
-                    <Link color="secondary" component={RouterLink} to="">
+                    <Link color="secondary" component={RouterLink} to={`/items/${id}`}>
                         {name}
                     </Link>
                 </Box>
