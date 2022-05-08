@@ -31,7 +31,7 @@ class ItemService(
                 item.subCategory.name,
                 "/files/${item.image.id}",
                 item.description,
-                item.borrowedBy.toList(),
+                item.borrowedBy,
                 )
             )
         }
@@ -48,7 +48,7 @@ class ItemService(
             dbItem.subCategory.name,
             "/files/${dbItem.image.id}",
             dbItem.description,
-            dbItem.borrowedBy.toList(),
+            dbItem.borrowedBy,
         )
     }
 

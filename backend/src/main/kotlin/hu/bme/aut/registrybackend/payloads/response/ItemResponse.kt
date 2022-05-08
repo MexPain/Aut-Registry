@@ -11,5 +11,5 @@ class ItemResponse(
     val subCategory: String,
     val images: String,
     val description: String?,
-    val borrowBy: List<ItemLending>,
+    val borrowBy: ItemLending?,
 )

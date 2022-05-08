@@ -46,9 +46,9 @@ class UserController(
         val user = SecurityContextHolder.getContext().authentication.principal as UserDetailsImpl
         val userData = userRepository.findByUsername(user.username)
             ?: throw UsernameNotFoundException("Logged in profile was not found")
-        if(itemLendingRepository.isItemWithIdBorrowByUserWithId(itemId, userData.id!!)) {
+        if(itemLendingRepository.isItemWithIdBorrowed(itemId)) {
             return ResponseEntity.badRequest().body(
-                MessageResponse("Item is already borrowed by ${userData.username}")
+                MessageResponse("Item is already borrowed")
             )
         }
         val newItemLending = ItemLending(
@@ -59,10 +59,15 @@ class UserController(
             ItemLendingKey(item.id, userData.id)
         )
         itemLendingRepository.save(newItemLending)
-        userData.borrowedItems.add(newItemLending)
-        val savedData = userRepository.save(userData)
-                    item.borrowedBy.add(newItemLending)
-                    itemRepository.save(item)
+
+        val savedData = userRepository.findByUsername(user.username)
+            ?: throw UsernameNotFoundException("Logged in profile was not found")
+//        userData.borrowedItems.add(newItemLending)
+//        val savedData = userRepository.save(userData)
+//
+//        item.borrowedBy = newItemLending
+//        itemRepository.save(item)
+
         return ResponseEntity.ok(
             savedData
         )

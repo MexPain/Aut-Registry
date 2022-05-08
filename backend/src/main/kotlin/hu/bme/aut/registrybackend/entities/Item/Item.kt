@@ -24,8 +24,8 @@ class Item(
     @JoinColumn(name = "subcategory_id")
     val subCategory: SubCategory,
 
-    @OneToMany(mappedBy = "item")
-    var borrowedBy: MutableSet<ItemLending> = hashSetOf(),
+    @OneToOne(mappedBy = "item")
+    var borrowedBy: ItemLending? = null,
 
     @OneToOne
     @JoinColumn(name = "image_id", referencedColumnName = "id")

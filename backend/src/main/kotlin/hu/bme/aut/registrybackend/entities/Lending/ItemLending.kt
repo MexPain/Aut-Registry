@@ -9,7 +9,7 @@ import javax.persistence.*
 @Table(name = "user_item_lending")
 class ItemLending(
     //@JsonIgnore
-    @ManyToOne
+    @OneToOne
     @MapsId("itemId")
     @JoinColumn(name = "item_id")
     val item: Item,
