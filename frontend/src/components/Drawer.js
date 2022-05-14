@@ -72,14 +72,20 @@ const Drawer = ({isDrawerOpen, handleDrawerClose}) => {
                     selected={location.pathname === "/home"}
                 />
                 <ListItemLink
+                    to="/search"
+                    primary="Find items"
+                    icon={<InboxIcon />}
+                    selected={location.pathname === "/search"}
+                />
+                <ListItemLink
                     to="/user/myItems"
-                    primary="Borrowed items"
+                    primary="My items"
                     icon={<InboxIcon />}
                     selected={location.pathname === "/user/myItems"}
                 />
                 <ListItemLink
                     to="/about"
-                    primary="Manage subscriptions"
+                    primary="Subscriptions"
                     icon={<InboxIcon />}
                     selected={location.pathname === "/about"}
                 />

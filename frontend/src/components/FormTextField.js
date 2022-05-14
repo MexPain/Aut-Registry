@@ -8,7 +8,6 @@ const FormTextField = ({name, ...otherProps}) => {
         ...field,
         ...otherProps,
         color: 'secondary',
-        margin: 'normal',
         fullWidth: true,
         variant: 'outlined'
     }

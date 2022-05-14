@@ -4,6 +4,7 @@ import hu.bme.aut.registrybackend.entities.FileStorage
 import hu.bme.aut.registrybackend.entities.Item.Item
 import hu.bme.aut.registrybackend.entities.User
 import hu.bme.aut.registrybackend.payloads.request.itemRequests.NewItemRequest
+import hu.bme.aut.registrybackend.payloads.response.BorrowedItemResponse
 import hu.bme.aut.registrybackend.payloads.response.ItemResponse
 import hu.bme.aut.registrybackend.repositories.ItemLendingRepository
 import hu.bme.aut.registrybackend.repositories.item.CategoryRepository
@@ -89,13 +90,42 @@ class ItemService(
     }
 
     fun findAllNonBorrowedItems(): List<Item> {
-        //lekérni az összes item-t
         val items = itemRepository.findAll()
+        return filterAvailableItems(items)
+    }
 
-        //lekérni az összes itemlending item_id-t disticten
+    fun findAllBorrowedItems(): List<BorrowedItemResponse> {
+        val lendings = itemLendingRepository.findAll()
+        if(lendings.isEmpty())
+            throw kotlin.NoSuchElementException("No items are borrowed")
+
+        return lendings.map {
+            BorrowedItemResponse(
+                it.item.name,
+                it.user.username,
+                it.lentAt,
+                it.status.name.name
+            )
+        }
+    }
+
+    fun searchForAvailableItemsWithNameLike(textQuery: String): List<Item> {
+        val items = itemRepository.findAllByNameContaining(textQuery)
+        return filterAvailableItems(items)
+    }
+
+    fun findAvailableItemsWithCategory(categoryParam: String): List<Item> {
+        val items = itemRepository.getAllWithCategoryName(categoryParam)
+        return filterAvailableItems(items)
+    }
+
+    fun findAvailableItemsWithCategoryAndNameLike(textQuery: String, categoryParam: String): List<Item> {
+        val items = itemRepository.getAllWithCategoryNameAndNameContaining(textQuery, categoryParam)
+        return filterAvailableItems(items)
+    }
+
+    private fun filterAvailableItems(items: List<Item>): List<Item> {
         val refIds = itemLendingRepository.findAllItemIdsDistinct()
-
-        //az elsőből kiválogatni, aki nincs benne a 2.ban
         val filtered = items.filter {
             !refIds.contains(it.id)
         }

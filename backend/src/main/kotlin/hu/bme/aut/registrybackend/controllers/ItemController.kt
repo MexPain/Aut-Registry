@@ -133,7 +133,37 @@ class ItemController(
                 "ParentCategory ${subcategory.parentCategory} was not found. Insert abandoned."
             ))
         }
+    }
 
+    @GetMapping("/search")
+    fun searchForItems(@RequestParam text: String?, @RequestParam category: String?): ResponseEntity<Any> {
+        if(text.isNullOrBlank() && category.isNullOrBlank()){
+            val allItems = itemService.findAllNonBorrowedItems().map {
+                ItemResponse(it.id!!, it.name, it.createdAt, it.category.name, it.subCategory.name,
+                    "/files/${it.image.id}", it.description, it.borrowedBy)
+            }
+            return ResponseEntity.ok(allItems)
+        }
+        if(category.isNullOrBlank() && !text.isNullOrBlank()) {
+            val itemsWithText = itemService.searchForAvailableItemsWithNameLike(text).map {
+                ItemResponse(it.id!!, it.name, it.createdAt, it.category.name, it.subCategory.name,
+                    "/files/${it.image.id}", it.description, it.borrowedBy)
+            }
+            return ResponseEntity.ok(itemsWithText)
+        }
+        if(text.isNullOrBlank() && !category.isNullOrBlank()) {
+            val itemsWithCategory = itemService.findAvailableItemsWithCategory(category).map {
+                ItemResponse(it.id!!, it.name, it.createdAt, it.category.name, it.subCategory.name,
+                    "/files/${it.image.id}", it.description, it.borrowedBy)
+            }
+            return ResponseEntity.ok(itemsWithCategory)
+        }
+
+        val itemsWithNameAndCat = itemService.findAvailableItemsWithCategoryAndNameLike(text!!, category!!).map {
+            ItemResponse(it.id!!, it.name, it.createdAt, it.category.name, it.subCategory.name,
+                "/files/${it.image.id}", it.description, it.borrowedBy)
+        }
+        return ResponseEntity.ok(itemsWithNameAndCat)
     }
 
 }
