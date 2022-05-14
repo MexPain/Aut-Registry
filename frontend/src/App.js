@@ -16,6 +16,9 @@ import NewItemForm from "./pages/NewItemForm";
 import AddCategoriesForm from "./pages/AddCategoriesForm";
 import EventBus from "./services/auth/EventBus";
 import {ItemDetails} from "./pages/ItemDetails";
+import {UserManagement} from "./pages/userManagement";
+import LentItemManagement from "./pages/lentItemManagement";
+import SearchPage from "./pages/searchPage";
 
 const drawerWidth = 240;
 
@@ -103,6 +106,9 @@ const App = () => {
                     <Route path="/login/*" element={<Login/>}/>
                     <Route path="*" element={<ErrorPage/>}/>
                     <Route path="/items/:id" element={<ItemDetails />} />
+                    <Route path="/manage/users" element={<UserManagement />} />
+                    <Route path="/manage/items" element={<LentItemManagement />} />
+                    <Route path="/search" element={<SearchPage />} />
                 </Routes>
             </Main>
         </UserContext.Provider>

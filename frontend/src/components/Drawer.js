@@ -3,7 +3,7 @@ import { Link as RouterLink, useLocation, useNavigate } from 'react-router-dom';
 import {forwardRef, useContext, useMemo, useState} from "react";
 import PropTypes from "prop-types";
 import {UserContext} from "../contexts/UserContext";
-import AlertDialog from "./AlertDialog";
+import ConfirmDialog from "./ConfirmDialog";
 import {Divider, IconButton, List, ListItem, ListItemIcon, ListItemText, Drawer as MuiDrawer} from "@mui/material";
 import {ChevronLeft} from "@mui/icons-material";
 import InboxIcon from '@mui/icons-material/MoveToInbox';
@@ -91,13 +91,30 @@ const Drawer = ({isDrawerOpen, handleDrawerClose}) => {
                         to="/newItem"
                         primary="Add new item"
                         icon={<InboxIcon />}
-                        selected={location.pathname === "/home"}
+                        selected={location.pathname === "/newItem"}
                     />
                     <ListItemLink
                         to="/newCategories"
                         primary="Add new categories"
                         icon={<InboxIcon />}
-                        selected={location.pathname === "/user/myItems"}
+                        selected={location.pathname === "/newCategories"}
+                    />
+                    <ListItemLink
+                        to="/manage/items"
+                        primary="Manage lent items"
+                        icon={<InboxIcon />}
+                        selected={location.pathname === "/manage/items"}
+                    />
+                </List>
+                <Divider />
+            </>)}
+            {currentUser && currentUser.roles.includes("ROLE_ADMIN") && (<>
+                <List component="nav" aria-label="main-content-nav">
+                    <ListItemLink
+                        to="/manage/users"
+                        primary="Manage users"
+                        icon={<InboxIcon />}
+                        selected={location.pathname === "/manage/users"}
                     />
                 </List>
                 <Divider />
@@ -134,7 +151,7 @@ const Drawer = ({isDrawerOpen, handleDrawerClose}) => {
                 open={isDrawerOpen}
             >{drawer}
             </MuiDrawer>
-            <AlertDialog
+            <ConfirmDialog
                 isOpen={isDialogVisible}
                 changeIsOpen={(value) => {setIsDialogVisible(value)}}
                 title="Confirm log out"

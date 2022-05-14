@@ -1,7 +1,7 @@
 import React from 'react';
 import {Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Typography} from "@mui/material";
 
-export default function AlertDialog({isOpen, changeIsOpen, title, message, okCallback, cancelCallback}) {
+export default function ConfirmDialog({isOpen, changeIsOpen, title, message, okCallback, cancelCallback}) {
 
     const handleOkClose = () => {
         changeIsOpen(false);
@@ -19,16 +19,12 @@ export default function AlertDialog({isOpen, changeIsOpen, title, message, okCal
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
         >
-            <DialogTitle id="alert-dialog-title">
-                <Typography color="primary" variant="h6">
-                    {title}
-                </Typography>
+            <DialogTitle color={"primary"} id="alert-dialog-title">
+                {title}
             </DialogTitle>
             <DialogContent>
                 <DialogContentText id="alert-dialog-description">
-                    <Typography color="inherit" variant="body2">
-                        {message}
-                    </Typography>
+                    {message}
                 </DialogContentText>
             </DialogContent>
             <DialogActions>

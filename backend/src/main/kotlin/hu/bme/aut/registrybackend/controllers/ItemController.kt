@@ -75,6 +75,23 @@ class ItemController(
         }
     }
 
+    @GetMapping("/borrowed/all")
+    @PreAuthorize("hasRole('ROLE_MODERATOR')")
+    fun getAllBorrowedItems(): ResponseEntity<Any> {
+        return try {
+            ResponseEntity.ok(
+                itemService.findAllBorrowedItems()
+            )
+        }catch (e: kotlin.NoSuchElementException) {
+            ResponseEntity.badRequest().body(ErrorMessage(
+                HttpStatus.BAD_REQUEST.value(),
+                Date(),
+                e.message,
+                ServletUriComponentsBuilder.fromCurrentContextPath().toUriString()
+            ))
+        }
+    }
+
     @GetMapping("/categories")
     fun getAllCategories(): ResponseEntity<List<Category>> {
         val cats = categoryRepository.findAll()
