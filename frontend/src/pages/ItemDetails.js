@@ -14,27 +14,27 @@ const ImgStyled = styled('img')(({theme}) => ({
 }));
 
 export function ItemDetails() {
-    const { id } = useParams()
+    const {id} = useParams()
 
     const [product, setProduct] = useState(undefined)
 
     useEffect(() => {
         itemService.getItemById(id)
-            .then( resp => {
+            .then(resp => {
                 setProduct(resp.data)
             })
-            .catch( e => console.log(e))
+            .catch(e => console.log(e))
     }, []);
 
     const imgHeader = "http://localhost:8080/api"
 
     const borrowItem = (id) => {
         userService.lendItemToUser(product.id)
-            .then( (resp) => {
+            .then((resp) => {
                 alert(`Item ${id} successfully borrowed`)
                 console.log(resp.data)
             })
-            .catch( (error) => {
+            .catch((error) => {
                 alert(JSON.stringify(error.response.data.message))
             })
     }
@@ -48,7 +48,6 @@ export function ItemDetails() {
                             <ImgStyled alt="complex" src={`${imgHeader}${product.images}` || `not-found`}/>
                         </Grid>
                         <Grid item xs={8}>
-                        {product &&
                             <Paper sx={{padding: 2, margin: 'auto',}}>
                                 <Typography mb={2} variant={"h4"}>{product.name}</Typography>
                                 <Typography mb={1} variant={"body1"}>Registered at: {product.createdAt}</Typography>
@@ -56,9 +55,8 @@ export function ItemDetails() {
                                 <Typography mb={1} variant={"body1"}>Subcategory: {product.subCategory}</Typography>
                                 <Typography mb={1} variant={"body1"}>Description: {product.description}</Typography>
                                 <Button sx={{marginTop: 2}} variant={"contained"}
-                                    onClick={() => borrowItem(product.id)}>Borrow this item</Button>
+                                        onClick={() => borrowItem(product.id)}>Borrow this item</Button>
                             </Paper>
-                        }
                         </Grid>
                     </Grid>
                 </Paper>

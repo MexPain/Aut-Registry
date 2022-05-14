@@ -8,14 +8,15 @@ import org.springframework.security.core.userdetails.UserDetails
 import kotlin.streams.toList
 
 data class UserDetailsImpl(
-    private val id: Long,
+    val id: Long,
     private val username: String,
     val email: String,
     val firstname: String,
     val lastname: String,
     @JsonIgnore
     private val password: String,
-    private val authorities: MutableCollection<out GrantedAuthority>
+    private val authorities: MutableCollection<out GrantedAuthority>,
+    val imageUrl: String? = null,
 ) : UserDetails {
     companion object {
         private const val serialVersionUID: Long = 1L
@@ -30,7 +31,8 @@ data class UserDetailsImpl(
                 user.firstname?:"",
                 user.lastname?:"",
                 user.password,
-                authorities
+                authorities,
+                user.image?.let { "/files/${user.image.id}" }
             )
         }
     }

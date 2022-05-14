@@ -128,7 +128,7 @@ class AuthController(
         val roles = userDetails.authorities.stream()
             .map { it.authority }.toList()
         return ResponseEntity.ok(JwtResponse(jwt, refreshToken.token, userDetails.firstname,
-            userDetails.lastname,userDetails.email, roles))
+            userDetails.lastname,userDetails.email, roles, userDetails.imageUrl))
     }
 
     @PostMapping("/refreshtoken")
