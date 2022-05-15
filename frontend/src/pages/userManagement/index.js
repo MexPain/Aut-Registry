@@ -19,12 +19,16 @@ export function UserManagement() {
         userService.getAllUsers()
             .then(resp => {
                 setUsers(resp.data)
-                console.log(resp.data)
             })
             .catch(e => {
+                console.log(e.response)
                 e.response.status === 403 && navigate("/forbidden") //TODO forbidden page, ezt máshol is
             })
     }, []);
+
+    useEffect(() => {
+        console.log(users)
+    }, [users])
 
     const changeRolesClicked = (user) => {
         setSelectedUser(user)
@@ -64,12 +68,16 @@ export function UserManagement() {
             title="Confirm user delete"
             message="Are you sure you want to delete this user?"
             okCallback={ ()=> {
-                //service delete user
-                console.log("User will be deleted")
+                let currentUser = selectedUser
+                userService.deleteUser(selectedUser.id)
+                    .then(resp => {
+                        console.log(resp)
+                        setUsers( current => current.filter( user => user.id !== currentUser.id))
+                    })
+                    .catch(e => console.log(e))
             }}
             cancelCallback={ () => {
                 //dialog dismissed
-                console.log("Nothing will happen")
             }}
         />}
         { selectedUser && <RolesFormDialog
@@ -82,13 +90,24 @@ export function UserManagement() {
             currentRoles={selectedUser.roles}
             message="Select the roles you want for this user!"
             okCallback={ (roles)=> {
-                //check if its changed frist
-                console.log("The new roles")
-                console.log(roles)
+                let currentUser = selectedUser
+                //check if its changed
+                let currentNames = currentUser.roles.map( role => role.name)
+                if(roles.length !== currentNames.length || !roles.every(roleName => currentNames.includes(roleName))) {
+                    userService.changeUserRoles(currentUser.id, roles)
+                        .then( resp => {
+                            setUsers( (current) => {
+                                let changedIdx = current.indexOf(currentUser)
+                                return current.map( (user, idx) => {
+                                    return idx === changedIdx ? resp.data : user
+                                })
+                            })
+                        })
+                        .catch(e => console.log(e))
+                }
             }}
             cancelCallback={ () => {
                 //dialog dismissed
-                console.log("Nothing will happen")
             }}
         />}
     </>)

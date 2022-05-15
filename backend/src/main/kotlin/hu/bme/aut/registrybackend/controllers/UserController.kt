@@ -5,21 +5,28 @@ import hu.bme.aut.registrybackend.entities.Lending.EStatus
 import hu.bme.aut.registrybackend.entities.Lending.ItemLending
 import hu.bme.aut.registrybackend.entities.Lending.ItemLendingKey
 import hu.bme.aut.registrybackend.entities.Lending.Status
+import hu.bme.aut.registrybackend.entities.Role
 import hu.bme.aut.registrybackend.entities.User
+import hu.bme.aut.registrybackend.payloads.request.RoleChangeRequest
 import hu.bme.aut.registrybackend.payloads.response.MessageResponse
 import hu.bme.aut.registrybackend.payloads.response.ProfileResponse
 import hu.bme.aut.registrybackend.repositories.ItemLendingRepository
+import hu.bme.aut.registrybackend.repositories.RoleRepository
 import hu.bme.aut.registrybackend.repositories.StatusRepository
 import hu.bme.aut.registrybackend.repositories.item.ItemRepository
 import hu.bme.aut.registrybackend.repositories.UserRepository
+import hu.bme.aut.registrybackend.security.services.RefreshTokenService
 import hu.bme.aut.registrybackend.security.services.UserDetailsImpl
+import hu.bme.aut.registrybackend.services.ItemService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.userdetails.UsernameNotFoundException
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.*
 import java.util.*
+import kotlin.NoSuchElementException
 import kotlin.streams.toList
 
 @RestController
@@ -29,6 +36,9 @@ class UserController(
     private val itemRepository: ItemRepository,
     private val itemLendingRepository: ItemLendingRepository,
     private val statusRepository: StatusRepository,
+    private val roleRepository: RoleRepository,
+    private val refreshTokenService: RefreshTokenService,
+    private val itemService: ItemService,
 ) {
 
 
@@ -52,7 +62,7 @@ class UserController(
     }
 
     @GetMapping("/all")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     fun getAllUsers() : ResponseEntity<List<User>> {
         val users = userRepository.findAll()
         return ResponseEntity.ok(users)
@@ -109,9 +119,66 @@ class UserController(
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
                 MessageResponse("The user has not borrowed any items")
             )
-
-
-
         return ResponseEntity.ok(items)
+    }
+
+    @PutMapping("/update/roles")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    fun changeUserRoles(@RequestParam id: Long, @RequestBody data: RoleChangeRequest): ResponseEntity<Any> {
+        try {
+            if(data.newRoles.isEmpty()) return ResponseEntity.badRequest().body(
+                MessageResponse("No roles provided")
+            )
+            val user = userRepository.findById(id).get()
+            val roles: MutableSet<Role> = hashSetOf()
+            data.newRoles.forEach {
+                when(it) {
+                    "ROLE_ADMIN"-> {
+                        val adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
+                            ?: throw RuntimeException("Error: Role is not found")
+                        roles.add(adminRole)
+                    }
+                    "ROLE_MODERATOR" -> {
+                        val modRole = roleRepository.findByName(ERole.ROLE_MODERATOR)
+                            ?: throw RuntimeException("Error: Role is not found")
+                        roles.add(modRole)
+                    }
+                    else -> {
+                        val userRole = roleRepository.findByName(ERole.ROLE_USER)
+                            ?: throw RuntimeException("Error: Role is not found")
+                        roles.add(userRole)
+                    }
+                }
+            }
+            user.roles = roles
+            val updatedUser = userRepository.save(user)
+            return ResponseEntity.ok(updatedUser)
+
+        }catch (e: NoSuchElementException) { return ResponseEntity.badRequest().body(
+            MessageResponse("User does not exists")
+        )}
+    }
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    fun deleteUser(@PathVariable id: Long): ResponseEntity<Any> {
+        return try {
+            deleteEverythingForUser(id)
+            ResponseEntity.status(HttpStatus.NO_CONTENT).body(
+                MessageResponse("User deleted"))
+        }catch (e: NoSuchElementException) {
+            ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+                MessageResponse("Failed to delete user"))
+        }
+    }
+
+    @Transactional
+    fun deleteEverythingForUser(id: Long) {
+        var user = userRepository.findById(id).get()
+        val refTokens = refreshTokenService.deleteAllByUser(user)
+
+        itemService.deleteItemLendingsByUserId(id)
+        userRepository.save(user)
+        userRepository.delete(user)
     }
 }

@@ -1,6 +1,7 @@
 package hu.bme.aut.registrybackend.security.services
 
 import hu.bme.aut.registrybackend.entities.RefreshToken
+import hu.bme.aut.registrybackend.entities.User
 import hu.bme.aut.registrybackend.repositories.RefreshTokenRepository
 import hu.bme.aut.registrybackend.repositories.UserRepository
 import hu.bme.aut.registrybackend.utils.TokenRefreshException
@@ -20,6 +21,7 @@ class RefreshTokenService(
 ) {
     fun findByToken(token: String) = refreshTokenRepository.findByToken(token)
 
+    @Transactional
     fun createRefreshToken(username: String): RefreshToken {
         val user = userRepository.findByUsername(username)
             ?: throw UsernameNotFoundException("User was not found with username: $username")
@@ -29,6 +31,7 @@ class RefreshTokenService(
             token = UUID.randomUUID().toString(),
             expiryDate = Instant.now().plusMillis(refreshTokenDurationMs)
         )
+        deleteAllByUser(user)   //remove the previous ones (if any)
         return refreshTokenRepository.save(refreshToken)
 
     }
@@ -43,7 +46,7 @@ class RefreshTokenService(
     }
 
     @Transactional
-    fun deleteByUserId(userId: Long) {
-        refreshTokenRepository.deleteByUser(userRepository.findById(userId).get())
+    fun deleteAllByUser(user: User): Int {
+        return refreshTokenRepository.deleteAllByUser(user)
     }
 }

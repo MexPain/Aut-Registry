@@ -12,12 +12,12 @@ import {
 export default function RolesFormDialog({isOpen, onClosed, currentRoles, title, message, okCallback, cancelCallback}) {
 
     const handleOkClose = () => {
-        onClosed(false);
         okCallback(roles)
+        onClosed(false);
     };
     const handleCancelClose = () => {
-        onClosed(false);
         cancelCallback()
+        onClosed(false);
     }
 
     function initRoles() {
@@ -63,7 +63,7 @@ export default function RolesFormDialog({isOpen, onClosed, currentRoles, title, 
             </DialogContent>
             <DialogActions>
                 <Button onClick={handleCancelClose}>Cancel</Button>
-                <Button onClick={handleOkClose}>Subscribe</Button>
+                <Button disabled={roles.length === 0} onClick={handleOkClose}>Apply changes</Button>
             </DialogActions>
         </Dialog>
     );

@@ -34,13 +34,11 @@ const StyledTableRow = styled(TableRow)(({theme}) => ({
 export default function UsersTable({users, onChangeRoleClick, onDeleteUserClick}) {
 
     const showRoles = (user) => {
-        return (<Grid container justifyContent={"center"}>
-            {user.roles.map( role =>
-            <Grid item key={role.id}>
-                <Typography>{role.name}</Typography>
-            </Grid>
-        )}
-        </Grid>)
+        return (
+            user.roles.map( role =>
+                <Typography key={role.id} textAlign={"center"}>{role.name}</Typography>
+            )
+        )
     }
 
     return (<>
