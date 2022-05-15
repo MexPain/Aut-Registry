@@ -9,11 +9,11 @@ const Home = () => {
     const [items, setItems] = useState([])
 
     useEffect(() => {
-        ItemService.getAvailableItems()
-            .then((success)=> {
-                console.log(success.data)
-                setItems([...success.data])
-            })
+        // ItemService.getAvailableItems()
+        //     .then((success)=> {
+        //         console.log(success.data)
+        //         setItems([...success.data])
+        //     })
     }, [])
 
     return (

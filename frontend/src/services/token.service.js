@@ -12,7 +12,7 @@ const getLocalAccessToken = () => {
 
 const updateLocalAccessToken = (token) => {
     let user = JSON.parse(localStorage.getItem("user"))
-    console.log(`User parsed for changing accessToken, user: ${localStorage.getItem("user")}`)
+    console.log(`User parsed for changing accessToken, the new ac: ${token}`)
     user.token = token
     localStorage.setItem("user", JSON.stringify(user))
 }

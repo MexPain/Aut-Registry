@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import {Route, Routes, Navigate} from "react-router-dom";
+import {Route, Routes, Navigate, useNavigate} from "react-router-dom";
 import NavBar from "./components/NavBar";
 import Home from "./pages/Home";
 import UserProfile from "./pages/UserProfile";
@@ -44,6 +44,7 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
 const App = () => {
 
     const theme = useTheme()
+    const navigate = useNavigate()
 
     const handleDrawerOpen = () => {
         setDrawerOpen(true);
@@ -68,6 +69,7 @@ const App = () => {
         authService.logout()
         setDrawerOpen(false)
         setCurrentUser(undefined)
+        navigate("/home")
     }
 
     const initUser = () => {

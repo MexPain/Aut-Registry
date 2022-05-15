@@ -10,14 +10,14 @@ const instance = axios.create({
 })
 
 instance.interceptors.request.use(
-    (config)=> {
+    (config) => {
         const token = TokenService.getLocalAccessToken()
-        if(token) {
+        if (token) {
             config.headers["Authorization"] = 'Bearer ' + token
         }
         return config
     },
-    (error)=>{
+    (error) => {
         return Promise.reject(error)
     }
 )
@@ -26,24 +26,27 @@ instance.interceptors.response.use(
     (res) => {
         return res
     },
-    async (err)=> {
+    (err) => {
         const originalConfig = err.config
         if (originalConfig.url !== "/auth/signin" && err.response) {
             if (err.response.status === 401 && Boolean(TokenService.getUser()) && !originalConfig._retry) {
                 originalConfig._retry = true
-                try {
-                    const rs = await instance.post("/auth/refreshtoken", {
-                        refreshToken: TokenService.getLocalRefreshToken(),
-                    });
-                    const { accessToken } = rs.data;
-                    TokenService.updateLocalAccessToken(accessToken);
+                instance.post("/auth/refreshtoken", {
+                    refreshToken: TokenService.getLocalRefreshToken()
+                }).then(resp => {
+                    const {token} = resp.data;
+                    TokenService.updateLocalAccessToken(token);
+                    console.log(originalConfig)
+                    originalConfig.headers["Authorization"] = 'Bearer ' + token
                     return instance(originalConfig);
-                } catch (_error) {
+                }).catch((_error) => {
+                    console.log("Logout dispatch now starts")
                     EventBus.dispatch("logout")
                     return Promise.reject(_error)
-                }
+                })
             }
         }
+        console.log("return reject without changing")
         return Promise.reject(err)
     }
 )

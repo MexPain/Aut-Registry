@@ -22,24 +22,10 @@ const logout = ()=> {
 }
 
 const register = (
-    username,
-    email,
-    password,
-    description,
-    phone,
-    imageUrl,
-    firstname,
-    lastname,
+    username, email, password, description, phone, imageUrl, firstname, lastname,
     ) => {
     return api.post("/auth/signup", {
-        username,
-        email,
-        password,
-        firstname,
-        lastname,
-        description,
-        phone,
-        imageUrl,
+        username, email, password, firstname, lastname, description, phone, imageUrl,
     });
 }
 
