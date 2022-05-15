@@ -49,10 +49,10 @@ class WebSecurityConfig(
         auth!!.userDetailsService(userDetails).passwordEncoder(passwordEncoder())
     }
 
-    @Bean
-    fun corsConfigurationSource(): CorsConfigurationSource {
-        val source = UrlBasedCorsConfigurationSource()
-        source.registerCorsConfiguration("/**", CorsConfiguration().applyPermitDefaultValues())
-        return source
-    }
+//    @Bean
+//    fun corsConfigurationSource(): CorsConfigurationSource {
+//        val source = UrlBasedCorsConfigurationSource()
+//        source.registerCorsConfiguration("/**", CorsConfiguration().applyPermitDefaultValues())
+//        return source
+//    }
 }

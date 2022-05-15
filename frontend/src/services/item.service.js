@@ -45,8 +45,20 @@ const getAllBorrowedItems = () => {
     return api.get("/items/borrowed/all")
 }
 
+const getAllPendingItems = () => {
+    return api.get("/items/borrowed/pending")
+}
+
 const searchItems = (textParam, categoryParam) => {
     return api.get(`/items/search?text=${textParam}&category=${categoryParam}`)
+}
+
+const changeItemStatus = (itemId) => {
+    return api.put(`/items/status/accept?id=${itemId}`)
+}
+
+const reclaimItem = (itemId) => {
+    return api.delete(`/items/reclaim?id=${itemId}`)
 }
 
 const ItemService = {
@@ -59,7 +71,10 @@ const ItemService = {
     getItemById,
     getAvailableItems,
     getAllBorrowedItems,
+    getAllPendingItems,
     searchItems,
+    changeItemStatus,
+    reclaimItem,
     imgHeader,
 }
 

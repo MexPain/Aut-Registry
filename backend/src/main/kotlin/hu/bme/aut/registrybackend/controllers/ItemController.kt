@@ -5,6 +5,7 @@ import hu.bme.aut.registrybackend.entities.Item.SubCategory
 import hu.bme.aut.registrybackend.payloads.request.itemRequests.NewCategoryRequest
 import hu.bme.aut.registrybackend.payloads.request.itemRequests.NewItemRequest
 import hu.bme.aut.registrybackend.payloads.request.itemRequests.NewSubCategoryRequest
+import hu.bme.aut.registrybackend.payloads.response.BorrowedItemResponse
 import hu.bme.aut.registrybackend.payloads.response.ErrorMessage
 import hu.bme.aut.registrybackend.payloads.response.ItemResponse
 import hu.bme.aut.registrybackend.payloads.response.MessageResponse
@@ -80,9 +81,9 @@ class ItemController(
     fun getAllBorrowedItems(): ResponseEntity<Any> {
         return try {
             ResponseEntity.ok(
-                itemService.findAllBorrowedItems()
+                itemService.findAllAcceptedItems()
             )
-        }catch (e: kotlin.NoSuchElementException) {
+        }catch (e: NoSuchElementException) {
             ResponseEntity.badRequest().body(ErrorMessage(
                 HttpStatus.BAD_REQUEST.value(),
                 Date(),
@@ -90,6 +91,46 @@ class ItemController(
                 ServletUriComponentsBuilder.fromCurrentContextPath().toUriString()
             ))
         }
+    }
+
+    @GetMapping("/borrowed/pending")
+    @PreAuthorize("hasRole('ROLE_MODERATOR')")
+    fun getAllPendingItems(): ResponseEntity<List<BorrowedItemResponse>> {
+        return try {
+            ResponseEntity.ok(
+                itemService.findAllPendingItems()
+            )
+        }catch (e: NoSuchElementException) {
+            ResponseEntity.status(204).body(
+                listOf()
+            )
+        }
+    }
+
+    @PutMapping("/status/accept")
+    @PreAuthorize("hasRole('ROLE_MODERATOR')")
+    fun acceptItemLending(@RequestParam id: Long): ResponseEntity<Any> {
+        return try {
+            val result = itemService.acceptItemLending(id)
+            ResponseEntity.ok(result)
+        } catch (e: kotlin.NoSuchElementException) {
+            ResponseEntity.badRequest().body(
+                MessageResponse("Invalid item id")
+            )
+        }
+    }
+
+    @DeleteMapping("/reclaim")
+    @PreAuthorize("hasRole('ROLE_MODERATOR')")
+    fun reclaimItem(@RequestParam id: Long): ResponseEntity<HttpStatus> {
+        itemService.deleteItemLendingByItemId(id)
+        return ResponseEntity(HttpStatus.NO_CONTENT)
+//        return try {
+//            itemService.reclaimItem(id)
+//            ResponseEntity(HttpStatus.NO_CONTENT)
+//        }catch (e: Exception) {
+//            ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR)
+//        }
     }
 
     @GetMapping("/categories")

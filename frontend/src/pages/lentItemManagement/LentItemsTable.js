@@ -35,8 +35,8 @@ const StyledTableRow = styled(TableRow)(({theme}) => ({
 export default function LentItemsTable({lendings, onSendReminderClick, onReclaimClick}) {
 
     return (<>
-        {!lendings && <Typography mt={5} textAlign={"center"} variant={"body1"}>No items are borrowed at the moment</Typography>}
-        {lendings && <TableContainer component={Paper}>
+        {lendings.length === 0 && <Typography mt={5} textAlign={"center"} variant={"body1"}>No items are borrowed at the moment</Typography>}
+        {lendings.length > 0 && <TableContainer component={Paper}>
             <Table sx={{minWidth: 650}} size="small" aria-label="simple table">
                 <TableHead>
                     <TableRow>
