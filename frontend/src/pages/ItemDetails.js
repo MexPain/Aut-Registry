@@ -32,7 +32,6 @@ export function ItemDetails() {
         userService.lendItemToUser(product.id)
             .then((resp) => {
                 alert(`Item ${id} successfully borrowed`)
-                console.log(resp.data)
             })
             .catch((error) => {
                 alert(JSON.stringify(error.response.data.message))

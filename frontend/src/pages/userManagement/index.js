@@ -21,13 +21,11 @@ export function UserManagement() {
                 setUsers(resp.data)
             })
             .catch(e => {
-                console.log(e.response)
                 e.response.status === 403 && navigate("/forbidden") //TODO forbidden page, ezt máshol is
             })
     }, []);
 
     useEffect(() => {
-        console.log(users)
     }, [users])
 
     const changeRolesClicked = (user) => {
@@ -71,7 +69,6 @@ export function UserManagement() {
                 let currentUser = selectedUser
                 userService.deleteUser(selectedUser.id)
                     .then(resp => {
-                        console.log(resp)
                         setUsers( current => current.filter( user => user.id !== currentUser.id))
                     })
                     .catch(e => console.log(e))

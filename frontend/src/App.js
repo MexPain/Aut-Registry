@@ -56,7 +56,6 @@ const App = () => {
     const login = (email, password, success, fail) => {
         authService.login(email, password).then(
             (response) => {
-                console.log(`A response: ${response.token}`)
                 setCurrentUser(authService.getCurrentUser())
                 success()
             },

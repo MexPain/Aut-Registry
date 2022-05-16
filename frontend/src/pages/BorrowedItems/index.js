@@ -11,11 +11,9 @@ const BorrowedItemsContent = () => {
     useEffect(() => {
         userService.getBorrowedItemsOfUser()
             .then(resp => {
-                console.log(resp.data)
                 setItems(resp.data)
             })
             .catch(e => {
-                console.log(e.response)
                 e.response.status === 404 && setItems(undefined)
             })
     }, [])

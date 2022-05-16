@@ -34,10 +34,6 @@ export default function RolesFormDialog({isOpen, onClosed, currentRoles, title, 
         setRoles(newRoles);
     };
 
-    useEffect( () => {
-        console.log(currentRoles)
-    },[])
-
     return (
         <Dialog open={isOpen} onClose={handleCancelClose}>
             <DialogTitle color={"primary"}>{title}</DialogTitle>

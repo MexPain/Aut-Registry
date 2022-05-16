@@ -18,7 +18,6 @@ const UserProfile = () => {
     useEffect(() => {
         userService.getProfileDetails().then(
             (response) => {
-                console.log(response.data)
                 setUserData(response.data)
             },
             (error) => {

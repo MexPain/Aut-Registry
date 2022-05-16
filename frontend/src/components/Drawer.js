@@ -129,7 +129,6 @@ const Drawer = ({isDrawerOpen, handleDrawerClose}) => {
                 <ListItemLink to="/user/profile" primary="Profile settings" icon={<InboxIcon />}
                               selected={location.pathname === "/user/profile"} />
                 <ListItem button onClick={()=>{
-                    console.log("Clicked")
                     setIsDialogVisible(true)
                 }}>
                     <ListItemIcon>

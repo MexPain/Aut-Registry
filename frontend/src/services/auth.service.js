@@ -11,14 +11,12 @@ const login = (username, password)=> {
             if (response.data.token) {
                 TokenService.setUser(response.data)
             }
-            console.log(`Login request successful, response data: ${response.data}`)
             return response.data
         })
 }
 
 const logout = ()=> {
     TokenService.removeUser()
-    console.log("Log out successful")
 }
 
 const register = (
