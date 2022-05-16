@@ -61,6 +61,10 @@ const reclaimItem = (itemId) => {
     return api.delete(`/items/reclaim?id=${itemId}`)
 }
 
+const getRecentItems = (numOfItems) => {
+    return api.get(`/items/recent?num=${numOfItems}`)
+}
+
 const ItemService = {
     getCategories,
     getSubCategories,
@@ -75,6 +79,7 @@ const ItemService = {
     searchItems,
     changeItemStatus,
     reclaimItem,
+    getRecentItems,
     imgHeader,
 }
 

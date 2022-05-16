@@ -207,4 +207,13 @@ class ItemController(
         return ResponseEntity.ok(itemsWithNameAndCat)
     }
 
+    @GetMapping("/recent")
+    fun getRecentItems(@RequestParam num: Int): ResponseEntity<Any> {
+        val items = itemService.getNumberOfRecentItems(num)
+        return ResponseEntity.ok(items.map { ItemResponse(
+            it.id!!, it.name, it.createdAt, it.category.name, it.subCategory.name,
+            "/files/${it.image.id}", it.description, it.borrowedBy
+        ) })
+    }
+
 }

@@ -1,12 +1,16 @@
 import {Link as RouterLink} from "react-router-dom";
-import {Button} from "@mui/material";
+import {Box, Button, Typography} from "@mui/material";
 
 const ErrorPage = () => {
-    return(
-    <>
-        <h2>Error page...</h2>
-        <Button variant="outlined" size="large" color="inherit" component={RouterLink} to="/">Back to home page</Button>
-    </>
+    return (
+        <>
+            <Typography variant={"h1"} textAlign={"center"} marginTop={10}>404</Typography>
+            <Typography variant={"h2"} textAlign={"center"} fontStyle={"italic"}>Page not found</Typography>
+            <Box display={"flex"} justifyContent={"center"} margin={3}>
+                <Button variant="contained" size="large"
+                        component={RouterLink} to="/">Back to home page</Button>
+            </Box>
+        </>
     )
 }
 export default ErrorPage

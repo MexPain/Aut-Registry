@@ -192,4 +192,8 @@ class ItemService(
         return filtered
     }
 
+    fun getNumberOfRecentItems(num: Int): List<Item> {
+        return findAllNonBorrowedItems().sortedByDescending { it.id }.take(num)
+    }
+
 }
