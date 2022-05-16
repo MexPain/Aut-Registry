@@ -1,16 +1,9 @@
-import React, {useContext, useEffect, useState} from "react"
-import AuthService from "../services/auth.service"
+import React, {useEffect, useState} from "react"
 import userService from "../services/user.service";
-import authService from "../services/auth.service";
-import {UserContext} from "../contexts/UserContext";
-import {Avatar, Button, Grid, Paper, Typography} from "@mui/material";
+import {Avatar, Grid, Paper, Typography} from "@mui/material";
 import itemService from "../services/item.service";
-import {useTheme} from "@mui/material/styles";
 
 const UserProfile = () => {
-
-    //const {currentUser, login, logOut} = useContext(UserContext)
-    const theme = useTheme()
 
     const [userData, setUserData] = useState(undefined)
     const [errorMessage, setErrorMessage] = useState("")
@@ -18,6 +11,7 @@ const UserProfile = () => {
     useEffect(() => {
         userService.getProfileDetails().then(
             (response) => {
+                //console.log(response.data)
                 setUserData(response.data)
             },
             (error) => {
@@ -50,16 +44,21 @@ const UserProfile = () => {
                         <Grid item xs={8}>
                             <Paper sx={{padding: 2, margin: 'auto',}}>
                                 <Typography mb={2} variant={"h4"}>{userData.username}</Typography>
-                                <Typography mb={1} variant={"body1"}>Email address: {userData.email}</Typography>
-                                <Typography mb={1} variant={"body1"}>Firstname: {userData.firstname}</Typography>
-                                <Typography mb={1} variant={"body1"}>Lastname: {userData.lastname}</Typography>
-                                <Typography mb={1} variant={"body1"}>Description: {userData.description}</Typography>
-                                <Typography mb={1} variant={"body1"}>Phone number: {userData.phone}</Typography>
-                                <Typography mb={1} variant={"body1"}>Phone number: {userData.phone}</Typography>
-                                <Typography mb={1} variant={"body1"}>Phone number: {userData.phone}</Typography>
-                                <Typography mb={1} variant={"body1"}>Phone number: {userData.phone}</Typography>
-                                <Typography mb={1} variant={"body1"}>Phone number: {userData.phone}</Typography>
-                                <Typography mb={1} variant={"body1"}>Phone number: {userData.phone}</Typography>
+
+                                <Typography fontWeight={"bold"} variant={"body1"}>Email address:</Typography>
+                                <Typography mb={1} pl={1} variant={"body1"}>{userData.email || '-'}</Typography>
+
+                                <Typography fontWeight={"bold"} variant={"body1"}>Firstname:</Typography>
+                                <Typography mb={1} pl={1} variant={"body1"}>{userData.firstname || '-'}</Typography>
+
+                                <Typography fontWeight={"bold"} variant={"body1"}>Lastname: </Typography>
+                                <Typography mb={1} pl={1} variant={"body1"}>{userData.lastname || '-'}</Typography>
+
+                                <Typography fontWeight={"bold"} variant={"body1"}>Phone number:</Typography>
+                                <Typography mb={1} pl={1} variant={"body1"}>{userData.phone || '-'}</Typography>
+
+                                <Typography fontWeight={"bold"} variant={"body1"}>Description: </Typography>
+                                <Typography mb={1} pl={1} variant={"body1"}>{userData.description || '-'}</Typography>
 
                             </Paper>
                         </Grid>

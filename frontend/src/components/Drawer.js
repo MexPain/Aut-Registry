@@ -19,13 +19,6 @@ const DrawerHeader = styled('div')(({ theme }) => ({
     justifyContent: 'flex-end',
 }));
 
-ListItemLink.propTypes = {
-    icon: PropTypes.element,
-    primary: PropTypes.string.isRequired,
-    to: PropTypes.string.isRequired,
-    selected: PropTypes.bool,
-};
-
 function ListItemLink(props) {
     const { icon, primary, to, selected, onClick } = props;
 

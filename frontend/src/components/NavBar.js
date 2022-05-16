@@ -2,10 +2,21 @@ import {useContext, useEffect, useState} from "react";
 import {Link as RouterLink, useNavigate} from "react-router-dom";
 import {UserContext} from "../contexts/UserContext";
 import Popup from "./Popup";
-import {AppBar as MuiAppBar, Box, Button, ButtonBase, Grid, IconButton, Toolbar, Typography} from '@mui/material';
+import {
+    AppBar as MuiAppBar,
+    Avatar,
+    Box,
+    Button,
+    ButtonBase,
+    Grid,
+    IconButton,
+    Toolbar,
+    Typography
+} from '@mui/material';
 import {styled, useTheme} from "@mui/material/styles";
 import MenuIcon from '@mui/icons-material/Menu';
 import {AccountCircle} from "@mui/icons-material";
+import itemService from "../services/item.service";
 
 const drawerWidth = 240;
 
@@ -36,8 +47,14 @@ const NavBar = ({isDrawerOpen, handleDrawerOpen}) => {
         setProfilePopup(event.currentTarget)
     }
 
-    function iconClicked() {
+    const homeIconClicked = () => {
         navigate("/home")
+    }
+
+    const getMonogram = () => {
+        let first = currentUser.firstname.substring(0, 1).toUpperCase()
+        let last = currentUser.lastname.substring(0, 1).toUpperCase()
+        return `${first}${last}`
     }
 
     return (
@@ -55,7 +72,7 @@ const NavBar = ({isDrawerOpen, handleDrawerOpen}) => {
                         <MenuIcon />
                     </IconButton>
                     }
-                    <ButtonBase sx={{height: 40, marginRight: theme.spacing(2)}} onClick={iconClicked}>
+                    <ButtonBase sx={{height: 40, marginRight: theme.spacing(2)}} onClick={homeIconClicked}>
                         <img alt={"logo img"} src={"/images/aut.png"}/>
                     </ButtonBase>
                     <Grid container sx={{flexGrow: 1, alignItems: "center"}}>
@@ -81,7 +98,10 @@ const NavBar = ({isDrawerOpen, handleDrawerOpen}) => {
                                 onClick={profileClick}
                                 color="inherit"
                             >
-                                <AccountCircle/>
+                                {currentUser.imageUrl &&
+                                    <Avatar alt="" src={`${itemService.imgHeader}${currentUser.imageUrl}`} />}
+                                {!currentUser.imageUrl &&
+                                    <Avatar sx={{bgcolor: 'info.dark', color: 'white'}}>{getMonogram()}</Avatar>}
                             </IconButton>
                             <Popup anchorEl={profilePopup} handleClose={() => {setProfilePopup(null)}}/>
                         </div>
