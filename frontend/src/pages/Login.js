@@ -1,5 +1,5 @@
 import {useContext, useEffect, useRef, useState} from "react";
-import {useNavigate, Routes, Route} from "react-router-dom";
+import {useNavigate, Routes, Route, useLocation} from "react-router-dom";
 import * as Yup from "yup";
 import {Formik, Form} from "formik";
 import {Link as RouterLink} from 'react-router-dom';
@@ -20,14 +20,26 @@ import {useTheme} from "@mui/material/styles";
 import {AccountCircle} from "@mui/icons-material";
 import FormTextField from "../components/FormTextField";
 import CloseIcon from '@mui/icons-material/Close';
+import CustomAlert from "../components/CustomAlert";
 
-const Login = ({error}) => {    //TODO navigation error messages
+const Login = () => {
 
-    const [loading, setLoading] = useState(false);
-    const [alertOpen, setAlertOpen] = useState(false)
-    const {currentUser, login} = useContext(UserContext)
+    const {login} = useContext(UserContext)
     const navigate = useNavigate()
-    const theme = useTheme()
+    const {state} = useLocation();
+
+    const initError = () => {
+        let {error} = state ? state : {undefined}
+        return error
+    }
+
+    const initSuccess = () => {
+        let {success} = state ? state : {undefined}
+        return success
+    }
+
+    const [error, setError] = useState(initError)
+    const [success, SetSuccess] = useState(initSuccess)
 
     const initialValues = {
         username: "",
@@ -41,49 +53,18 @@ const Login = ({error}) => {    //TODO navigation error messages
             .required("Password is required"),
     })
 
-    const SessionAlert = () => {
-        return (
-            <Collapse in={alertOpen}>
-                <Alert
-                    action={
-                        <IconButton
-                            aria-label="close"
-                            color="inherit"
-                            size="small"
-                            onClick={() => {
-                                setAlertOpen(false);
-                            }}
-                        >
-                            <CloseIcon fontSize="inherit" />
-                        </IconButton>
-                    }
-                    sx={{ mb: 2 }}
-                >
-                    Close me!
-                </Alert>
-            </Collapse>
-        )
-    }
-
-    useEffect(()=>{
-        error && setAlertOpen(true)
-    }, [error])
-
     return (
-        <Container maxWidth="md" sx={{marginTop: theme.spacing(5)}}>
-            {/*<Routes>*/}
-            {/*    <Route path="expired" element={<SessionAlert />}/>*/}
-            {/*</Routes>*/}
-            {alertOpen && <SessionAlert />}
+        <Container maxWidth="md">
+            <CustomAlert success={success} error={error}/>
             <Paper elevation={2} sx={{
-                padding: theme.spacing(3),
+                padding: 3,
                 marginTop: 8,
                 marginBottom: 8,
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
             }}>
-                <Avatar sx={{margin: theme.spacing(2), backgroundColor: theme.palette.primary.main}}>
+                <Avatar sx={{margin: 1, backgroundColor: 'primary.main'}}>
                     <AccountCircle/>
                 </Avatar>
                 <Typography component="h1" variant="h5">
@@ -92,25 +73,21 @@ const Login = ({error}) => {    //TODO navigation error messages
                 <Formik
                     initialValues={{...initialValues}}
                     validationSchema={validationSchema}
-                    onSubmit={values => {
-                        if (!loading) {
-                            setLoading(true)
-                            login(
-                                values.username,
-                                values.password,
-                                () => {
-                                    setLoading(false)
-                                    navigate("/home")
-                                }, () => {
-                                    setLoading(false)
-                                    //setError("Wrong credentials. Please try again.")
-                                })
-                        }
+                    onSubmit={(values, {setSubmitting}) => {
+                        login(values.username, values.password,
+                            () => {
+                                setSubmitting(false)
+                                navigate("/home")
+                            }, () => {
+                                setSubmitting(false)
+                                setError("Wrong credentials. Please try again.")
+                            })
+
                     }}
-                >
+                >{({ values, errors, isValid, isSubmitting }) =>(
                     <Form>
                         <Grid container>
-                            <Grid item xs={12}>
+                            <Grid item xs={12} marginY={1}>
                                 <FormTextField
                                     name="username"
                                     label="Username"
@@ -118,39 +95,27 @@ const Login = ({error}) => {    //TODO navigation error messages
                                     autoFocus
                                 />
                             </Grid>
-                            <Grid item xs={12}>
+                            <Grid item xs={12} marginY={1}>
                                 <FormTextField
                                     name="password"
                                     label="Password"
                                     type="password"
                                 />
                             </Grid>
-                            <Grid item>
-                                <FormControlLabel
-                                    control={
-                                        <Switch
-                                            // checked={state.checkedB}
-                                            // onChange={handleChange}
-                                            name="checkedB"
-                                            color="primary"
-                                        />
-                                    }
-                                    label="Remember me TODO"
-                                />
-                            </Grid>
+
                             <Grid item xs={12}>
                                 <Button
                                     type="submit"
-                                    disabled={loading}
+                                    disabled={isSubmitting || !isValid}
                                     fullWidth
                                     variant="contained"
                                     color="primary"
                                     sx={{
-                                        marginTop: theme.spacing(2),
-                                        marginBottom: theme.spacing(2),
+                                        marginTop: 2,
+                                        marginBottom: 2,
                                     }}
                                 >
-                                    {loading ? <CircularProgress size={24}/> : 'Sign In'}
+                                    {isSubmitting ? <CircularProgress size={24}/> : 'Sign In'}
                                 </Button>
                             </Grid>
                             <Grid container>
@@ -167,6 +132,7 @@ const Login = ({error}) => {    //TODO navigation error messages
                             </Grid>
                         </Grid>
                     </Form>
+                    )}
                 </Formik>
             </Paper>
         </Container>

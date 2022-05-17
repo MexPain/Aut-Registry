@@ -1,6 +1,6 @@
 import {Formik, Form} from "formik";
 import * as Yup from 'yup';
-import {Link as RouterLink, useNavigate} from "react-router-dom";
+import {Link as RouterLink, useLocation, useNavigate} from "react-router-dom";
 import AuthService from "../services/auth.service";
 import {
     Avatar,
@@ -12,17 +12,18 @@ import {
     Paper,
     Typography
 } from "@mui/material";
-import {useTheme} from "@mui/material/styles";
 import {AccountCircle} from "@mui/icons-material";
 import FormTextField from "../components/FormTextField";
 import {FileUploader} from "../components/fileUpload/FileUploader";
+import {useEffect, useState} from "react";
+import CustomAlert from "../components/CustomAlert";
 
 
 const Register = () => {
 
-    const theme = useTheme()
-
     const navigate = useNavigate()
+
+    const [error, setError] = useState(undefined)
 
     const initialValues = {
         username: "",
@@ -60,10 +61,15 @@ const Register = () => {
         ).max(1, "You can only upload 1 file"),
     })
 
+    useEffect(() => {
+        window.scrollTo(0, 0)
+    }, [error])
+
     return (
-        <Container maxWidth="md" sx={{marginTop: theme.spacing(5)}}>
+        <Container maxWidth="md" sx={{marginTop: 5}}>
+            <CustomAlert error={error}/>
             <Paper elevation={2} sx={{
-                padding: theme.spacing(3),
+                padding: 3,
                 marginTop: 8,
                 marginBottom: 8,
                 display: 'flex',
@@ -71,12 +77,12 @@ const Register = () => {
                 alignItems: 'center',
             }}>
                 <Avatar sx={{
-                    margin: theme.spacing(2),
-                    backgroundColor: theme.palette.primary.main,
+                    margin: 1,
+                    backgroundColor: 'primary.main',
                 }}>
                     <AccountCircle/>
                 </Avatar>
-                <Typography component="h1" variant="h5">
+                <Typography component="h1" variant="h5" marginBottom={2}>
                     Register new account
                 </Typography>
                 <Formik
@@ -84,47 +90,40 @@ const Register = () => {
                     validationSchema={validationSchema}
                     validateOnBlur={true}
                     validateOnChange={false}
-                    onSubmit={(values, { setSubmitting } )=> {
+                    onSubmit={(values, {setSubmitting}) => {
                         AuthService.register(
-                            values.username,
-                            values.email,
-                            values.password,
-                            values.description,
-                            values.phone,
+                            values.username, values.email, values.password,
+                            values.description, values.phone,
                             values.images.length > 0 ? values.images[0].url : null,
-                            values.firstname,
-                            values.lastname
-                            ).then(
+                            values.firstname, values.lastname
+                        ).then(
                             (success) => {
-                                navigate("/login")
-                            },
-                            (error) => {
-                                console.log(error)
+                                navigate("/login", {state: {success: "Registration successful. You may now log in"}})
+                            })
+                            .catch((error) => {
+                                let message = error.response.data.message || "Account registration failed, please try again"
+                                setError(message)
                                 setSubmitting(false)
-                            }
-                        )
-                        //add values to service, navigate to login if success
-                        //show alert if fail
-                        //setSubmitting(false)
+                            })
                     }}
-                >{({ values, errors, isValid, isSubmitting }) =>(
+                >{({values, errors, isValid, isSubmitting}) => (
                     <Form>
                         <Grid container spacing={2}>
-                            <Grid item xs={6}>
+                            <Grid item xs={6} marginY={1}>
                                 <FormTextField
                                     label="Firstname"
                                     name="firstname"
                                     autoFocus
                                 />
                             </Grid>
-                            <Grid item xs={6}>
+                            <Grid item xs={6} marginY={1}>
                                 <FormTextField
                                     label="Lastname"
                                     name="lastname"
                                 />
                             </Grid>
 
-                            <Grid item xs={6}>
+                            <Grid item xs={6} marginY={1}>
                                 <FormTextField
                                     name="password"
                                     label="Password*"
@@ -132,35 +131,35 @@ const Register = () => {
                                     autoComplete="current-password"
                                 />
                             </Grid>
-                            <Grid item xs={6}>
+                            <Grid item xs={6} marginY={1}>
                                 <FormTextField
                                     name="confirmPassword"
                                     label="Confirm password*"
                                     type="password"
                                 />
                             </Grid>
-                            <Grid item xs={12}>
+                            <Grid item xs={12} marginY={1}>
                                 <FormTextField
                                     label="Username*"
                                     name="username"
                                     placeholder="Displays as the name of your account. Must be unique."
                                 />
                             </Grid>
-                            <Grid item xs={12}>
+                            <Grid item xs={12} marginY={1}>
                                 <FormTextField
                                     label="Email*"
                                     name="email"
                                     autoComplete="email"
                                 />
                             </Grid>
-                            <Grid item xs={12}>
+                            <Grid item xs={12} marginY={1}>
                                 <FormTextField
                                     placeholder="06301234567"
                                     name="phone"
                                     label="Phone number"
                                 />
                             </Grid>
-                            <Grid item xs={12}>
+                            <Grid item xs={12} marginY={1}>
                                 <FormTextField
                                     multiline={true}
                                     rows={4}
@@ -184,7 +183,7 @@ const Register = () => {
                                     variant="contained"
                                     color="primary"
                                     sx={{
-                                        marginTop: theme.spacing(2),
+                                        marginTop: 2,
                                     }}
                                 >
                                     {isSubmitting ? <CircularProgress size={24}/> : 'Register'}
@@ -202,7 +201,7 @@ const Register = () => {
                             </Grid>
                         </Grid>
                     </Form>
-                    )}
+                )}
                 </Formik>
             </Paper>
         </Container>

@@ -6,7 +6,7 @@ const login = (username, password)=> {
         .post("/auth/signin", {
             username,
             password
-        })
+        },{ skipAuthRefresh: true })
         .then(response => {
             if (response.data.token) {
                 TokenService.setUser(response.data)

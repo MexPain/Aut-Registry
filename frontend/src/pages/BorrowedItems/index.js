@@ -29,7 +29,7 @@ const BorrowedItemsContent = () => {
                         <Grid item xs={12}>
                             <BorrowedItemsTable items={items}/>
                         </Grid>
-                        <Grid item my={3} xs={12} mx={2}>
+                        <Grid item mt={3} xs={12} mx={2}>
                             <Link color="secondary" component={RouterLink} to="/home" variant="body2">
                                 Find items for your needs
                             </Link>

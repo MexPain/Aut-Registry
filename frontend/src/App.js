@@ -1,7 +1,7 @@
 import {useEffect, useState} from "react";
-import {Route, Routes, Navigate, useNavigate} from "react-router-dom";
+import {Navigate, Route, Routes, useNavigate} from "react-router-dom";
 import NavBar from "./components/NavBar";
-import Home from "./pages/Home";
+import Home from "./pages/HomePage/Home";
 import UserProfile from "./pages/UserProfile";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
@@ -11,7 +11,7 @@ import authService from "./services/auth.service";
 import About from "./pages/About";
 import ErrorPage from "./pages/ErrorPage";
 import {UserContext} from "./contexts/UserContext";
-import { styled, useTheme } from '@mui/material/styles';
+import {styled, useTheme} from '@mui/material/styles';
 import NewItemForm from "./pages/NewItemForm";
 import AddCategoriesForm from "./pages/AddCategoriesForm";
 import EventBus from "./services/auth/EventBus";
@@ -72,9 +72,7 @@ const App = () => {
     }
 
     const initUser = () => {
-        let user = authService.getCurrentUser()
-        //TODO check token expiration on server, if valid, keep it, if not undefined
-        return user
+        return authService.getCurrentUser()
     }
 
     const [drawerOpen, setDrawerOpen] = useState(false)
@@ -101,15 +99,18 @@ const App = () => {
                     <Route path="/newItem" element={<NewItemForm/>}/>
                     <Route path="/newCategories" element={<AddCategoriesForm />} />
                     <Route path="/user/myItems"
-                           element={currentUser ? <BorrowedItemsContent/> : <Navigate to="/login" state={{error: "yes"}}/>}/>
-                    <Route path="/user/profile" element={currentUser ? <UserProfile/> : <Navigate to="/login/expired"/>}/>
+                           element={currentUser ? <BorrowedItemsContent/> : <Navigate to="/login" state={{error: "Login required"}}/>}/>
+                    <Route path="/user/profile"
+                           element={currentUser ? <UserProfile/> : <Navigate to="/login" state={{error: "Login required"}}/>}/>
                     <Route path="/register" element={<Register/>}/>
-                    <Route path="/login/*" element={<Login/>}/>
+                    <Route path="/login/" element={<Login/>}/>
                     <Route path="*" element={<ErrorPage/>}/>
-                    <Route path="/items/:id" element={<ItemDetails />} />
+                    <Route path="/items/:id"
+                           element={currentUser ? <ItemDetails/> : <Navigate to="/login" state={{error: "Login required"}}/>}/>
                     <Route path="/manage/users" element={<UserManagement />} />
                     <Route path="/manage/items" element={<LentItemManagement />} />
-                    <Route path="/search" element={<SearchPage />} />
+                    <Route path="/search"
+                           element={currentUser ? <SearchPage/> : <Navigate to="/login" state={{error: "Login required"}}/>}/>
                 </Routes>
             </Main>
         </UserContext.Provider>

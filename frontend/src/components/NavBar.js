@@ -2,6 +2,7 @@ import {useContext, useEffect, useState} from "react";
 import {Link as RouterLink, useNavigate} from "react-router-dom";
 import {UserContext} from "../contexts/UserContext";
 import Popup from "./Popup";
+import logo from "../assets/aut.png"
 import {
     AppBar as MuiAppBar,
     Avatar,
@@ -73,7 +74,7 @@ const NavBar = ({isDrawerOpen, handleDrawerOpen}) => {
                     </IconButton>
                     }
                     <ButtonBase sx={{height: 40, marginRight: theme.spacing(2)}} onClick={homeIconClicked}>
-                        <img alt={"logo img"} src={"/images/aut.png"}/>
+                        <img alt={"logo img"} src={logo}/>
                     </ButtonBase>
                     <Grid container sx={{flexGrow: 1, alignItems: "center"}}>
                         <Typography variant="h5" color="inherit" sx={{marginRight: theme.spacing(2)}}>Item registry</Typography>

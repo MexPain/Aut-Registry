@@ -1,14 +1,6 @@
-import {useState} from "react";
 import {
-    Button, Grid, Link,
-    Paper,
-    Table,
-    TableBody,
-    TableCell,
-    tableCellClasses,
-    TableContainer,
-    TableHead,
-    TableRow, Typography
+    Grid, Link, Paper, Table, TableBody, TableCell, tableCellClasses,
+    TableContainer, TableHead, TableRow, Typography
 } from "@mui/material";
 import {styled} from "@mui/material/styles";
 import {Link as RouterLink} from "react-router-dom";
@@ -33,7 +25,7 @@ const StyledTableRow = styled(TableRow)(({theme}) => ({
     },
 }));
 
-const BorrowedItemsTable = ({items}) => {
+const BorrowedItemsTable = ({items, onCancelClick}) => {
 
     return (
         <>
@@ -52,20 +44,16 @@ const BorrowedItemsTable = ({items}) => {
                         {items.map((row, idx) => (
                             <StyledTableRow key={idx}>
                                 <StyledTableCell component="th" scope="row">
-                                    {row.item.name}
+                                    {row.itemName}
                                 </StyledTableCell>
                                 <StyledTableCell align="center">{row.lentAt}</StyledTableCell>
-                                <StyledTableCell align="center">Ide jon a status</StyledTableCell>
+                                <StyledTableCell align="center">{row.status}</StyledTableCell>
                                 <StyledTableCell align="right">
                                     <Grid container justifyContent={"right"}>
                                         <Grid item>
-                                            <Link color="secondary" component={RouterLink} to="/home" variant="body2">
-                                                Send reminder
-                                            </Link>
-                                        </Grid>
-                                        <Grid item marginLeft={1}>
-                                            <Link color="secondary" component={RouterLink} to="/home" variant="body2">
-                                                Reclaim
+                                            <Link color="secondary" variant="body2"
+                                                  onClick={() => onCancelClick(row)}>
+                                                Cancel
                                             </Link>
                                         </Grid>
                                     </Grid>

@@ -1,10 +1,10 @@
 import {Button, Grid, Paper, Typography} from "@mui/material";
 import {styled} from "@mui/material/styles";
-import aut from "../assets/aut.png"
 import {useParams} from "react-router-dom";
 import {useEffect, useState} from "react";
 import itemService from "../services/item.service";
 import userService from "../services/user.service";
+import CustomAlert from "../components/CustomAlert";
 
 const ImgStyled = styled('img')(({theme}) => ({
     margin: 'auto',
@@ -18,6 +18,9 @@ export function ItemDetails() {
 
     const [product, setProduct] = useState(undefined)
 
+    const [error, setError] = useState(undefined)
+    const [success, setSuccess] = useState(undefined)
+
     useEffect(() => {
         itemService.getItemById(id)
             .then(resp => {
@@ -26,25 +29,26 @@ export function ItemDetails() {
             .catch(e => console.log(e))
     }, []);
 
-    const imgHeader = "http://localhost:8080/api"
-
     const borrowItem = (id) => {
         userService.lendItemToUser(product.id)
             .then((resp) => {
-                alert(`Item ${id} successfully borrowed`)
+                setSuccess(`Borrow request successfully sent.`)
             })
-            .catch((error) => {
-                alert(JSON.stringify(error.response.data.message))
+            .catch((e) => {
+                setError(e.response.data.message)
             })
     }
 
     return (
         <Grid container>
+            <Grid item xs={12} marginY={4}>
+                <CustomAlert success={success} error={error}/>
+            </Grid>
             {product && <Grid item xs={12} lg={10} mx={"auto"}>
                 <Paper sx={{padding: 2, margin: 'auto',}}>
                     <Grid container spacing={3}>
-                        <Grid item xs={4}>
-                            <ImgStyled alt="complex" src={`${imgHeader}${product.images}` || `not-found`}/>
+                        <Grid item xs={4} alignSelf={"center"}>
+                            <ImgStyled alt="complex" src={`${itemService.imgHeader}${product.images}` || `not-found`}/>
                         </Grid>
                         <Grid item xs={8}>
                             <Paper sx={{padding: 2, margin: 'auto',}}>

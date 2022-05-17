@@ -42,12 +42,6 @@ class ItemController(
         return ResponseEntity.ok(result)
     }
 
-    @GetMapping("/borrowed")
-    fun getItemsBorrowedByUser(@RequestParam username: String): ResponseEntity<Any> {
-        //TODO
-        return ResponseEntity.badRequest().body("Not yet implemented")
-    }
-
     @GetMapping("/available")
     fun getNonBorrowedItems(): ResponseEntity<List<ItemResponse>> {
         val result = itemService.findAllNonBorrowedItems()

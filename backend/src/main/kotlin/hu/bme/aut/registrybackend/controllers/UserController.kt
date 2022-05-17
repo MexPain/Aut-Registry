@@ -8,6 +8,7 @@ import hu.bme.aut.registrybackend.entities.Lending.Status
 import hu.bme.aut.registrybackend.entities.Role
 import hu.bme.aut.registrybackend.entities.User
 import hu.bme.aut.registrybackend.payloads.request.RoleChangeRequest
+import hu.bme.aut.registrybackend.payloads.response.BorrowedItemResponse
 import hu.bme.aut.registrybackend.payloads.response.MessageResponse
 import hu.bme.aut.registrybackend.payloads.response.ProfileResponse
 import hu.bme.aut.registrybackend.repositories.ItemLendingRepository
@@ -119,7 +120,16 @@ class UserController(
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
                 MessageResponse("The user has not borrowed any items")
             )
-        return ResponseEntity.ok(items)
+        return ResponseEntity.ok(items.map {
+            BorrowedItemResponse(
+                it.item.id!!,
+                it.user.id!!,
+                it.item.name,
+                it.user.username,
+                it.lentAt,
+                it.status!!.name.name
+            )
+        })
     }
 
     @PutMapping("/update/roles")
