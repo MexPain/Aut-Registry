@@ -1,11 +1,19 @@
-import {styled, useTheme} from "@mui/material/styles";
+import {styled} from "@mui/material/styles";
 import { Link as RouterLink, useLocation, useNavigate } from 'react-router-dom';
 import {forwardRef, useContext, useMemo, useState} from "react";
-import PropTypes from "prop-types";
 import {UserContext} from "../contexts/UserContext";
-import AlertDialog from "./AlertDialog";
-import {Divider, IconButton, List, ListItem, ListItemIcon, ListItemText, Drawer as MuiDrawer} from "@mui/material";
-import {ChevronLeft} from "@mui/icons-material";
+import ConfirmDialog from "./ConfirmDialog";
+import {
+    Divider,
+    IconButton,
+    List,
+    ListItem,
+    ListItemIcon,
+    ListItemText,
+    Drawer as MuiDrawer,
+    ListSubheader
+} from "@mui/material";
+import {ChevronLeft, Home, Search, TableRows, AddBox, ManageAccounts, PowerSettingsNew, AccountBox, Description} from "@mui/icons-material";
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 
 const drawerWidth = 240;
@@ -18,13 +26,6 @@ const DrawerHeader = styled('div')(({ theme }) => ({
     ...theme.mixins.toolbar,
     justifyContent: 'flex-end',
 }));
-
-ListItemLink.propTypes = {
-    icon: PropTypes.element,
-    primary: PropTypes.string.isRequired,
-    to: PropTypes.string.isRequired,
-    selected: PropTypes.bool,
-};
 
 function ListItemLink(props) {
     const { icon, primary, to, selected, onClick } = props;
@@ -47,14 +48,10 @@ function ListItemLink(props) {
 
 const Drawer = ({isDrawerOpen, handleDrawerClose}) => {
 
-    const {currentUser, login, logOut} = useContext(UserContext)
+    const {currentUser, logOut} = useContext(UserContext)
     const location = useLocation()
     const navigate = useNavigate()
     const [isDialogVisible, setIsDialogVisible] = useState(false);
-
-    // const handleListItemClick = (event, path) => {
-    //     setSelectedIndex(index);
-    // };
 
     const drawer = (
         <div>
@@ -64,38 +61,87 @@ const Drawer = ({isDrawerOpen, handleDrawerClose}) => {
                 </IconButton>
             </DrawerHeader>
             <Divider />
-            <List component="nav" aria-label="main-content-nav">
+            <List component="nav"
+                  aria-label="main-content-nav"
+            >
                 <ListItemLink
                     to="/home"
-                    primary="News"
-                    icon={<InboxIcon />}
+                    primary="Kezdőlap"
+                    icon={<Home />}
                     selected={location.pathname === "/home"}
                 />
                 <ListItemLink
-                    to="/user/myItems"
-                    primary="Borrowed items"
-                    icon={<InboxIcon />}
-                    selected={location.pathname === "/user/myItems"}
+                    to="/search"
+                    primary="Tárgyak keresése"
+                    icon={<Search />}
+                    selected={location.pathname === "/search"}
                 />
                 <ListItemLink
-                    to="/about"
-                    primary="Manage subscriptions"
-                    icon={<InboxIcon />}
-                    selected={location.pathname === "/about"}
+                    to="/user/myItems"
+                    primary="Kölcsönzött tárgyaim"
+                    icon={<TableRows />}
+                    selected={location.pathname === "/user/myItems"}
                 />
             </List>
             <Divider />
+            {currentUser && currentUser.roles.includes("ROLE_MODERATOR") && (<>
+                <List component="nav"
+                      aria-label="main-content-nav"
+                      subheader={
+                          <ListSubheader component="div" id="mod-actions">
+                              Moderátor
+                          </ListSubheader>
+                      }
+                >
+                    <ListItemLink
+                        to="/newItem"
+                        primary="Új tárgy hozzáadása"
+                        icon={<AddBox />}
+                        selected={location.pathname === "/newItem"}
+                    />
+                    <ListItemLink
+                        to="/newCategories"
+                        primary="Új kategória hozzáadása"
+                        icon={<AddBox />}
+                        selected={location.pathname === "/newCategories"}
+                    />
+                    <ListItemLink
+                        to="/manage/items"
+                        primary="Aktív kölcsönzések"
+                        icon={<Description />}
+                        selected={location.pathname === "/manage/items"}
+                    />
+                </List>
+                <Divider />
+            </>)}
+            {currentUser && currentUser.roles.includes("ROLE_ADMIN") && (<>
+                <List component="nav"
+                      aria-label="main-content-nav"
+                      subheader={
+                          <ListSubheader component="div" id="admin-actions">
+                              Adminisztrátor
+                          </ListSubheader>
+                      }
+                >
+                    <ListItemLink
+                        to="/manage/users"
+                        primary="Felhasználók kezelése"
+                        icon={<ManageAccounts />}
+                        selected={location.pathname === "/manage/users"}
+                    />
+                </List>
+                <Divider />
+            </>)}
             <List component="nav" aria-label="user-settings">
-                <ListItemLink to="/user/profile" primary="Profile settings" icon={<InboxIcon />}
+                <ListItemLink to="/user/profile" primary="Adataim" icon={<AccountBox />}
                               selected={location.pathname === "/user/profile"} />
                 <ListItem button onClick={()=>{
-                    console.log("Clicked")
                     setIsDialogVisible(true)
                 }}>
                     <ListItemIcon>
-                        <InboxIcon />
+                        <PowerSettingsNew />
                     </ListItemIcon>
-                    <ListItemText primary="Log out" />
+                    <ListItemText primary="Kijelentkezés" />
                 </ListItem>
             </List>
         </div>
@@ -117,11 +163,11 @@ const Drawer = ({isDrawerOpen, handleDrawerClose}) => {
                 open={isDrawerOpen}
             >{drawer}
             </MuiDrawer>
-            <AlertDialog
+            <ConfirmDialog
                 isOpen={isDialogVisible}
                 changeIsOpen={(value) => {setIsDialogVisible(value)}}
-                title="Confirm log out"
-                message="Are you sure you want to log out?"
+                title="Kijelentkezés megerősítése"
+                message="Biztosan ki szeretne jelentkezni"
                 okCallback={ ()=> {
                     logOut()
                     navigate("/home")

@@ -1,11 +1,12 @@
-import {useContext, useEffect, useState} from "react";
+import {useContext, useState} from "react";
 import {Link as RouterLink, useNavigate} from "react-router-dom";
 import {UserContext} from "../contexts/UserContext";
 import Popup from "./Popup";
-import {AppBar as MuiAppBar, Box, Button, ButtonBase, Grid, IconButton, Toolbar, Typography} from '@mui/material';
+import logo from "../assets/aut.png"
+import {AppBar as MuiAppBar, Avatar, Box, Button, ButtonBase, Grid, IconButton, Toolbar, Typography} from '@mui/material';
 import {styled, useTheme} from "@mui/material/styles";
 import MenuIcon from '@mui/icons-material/Menu';
-import {AccountCircle} from "@mui/icons-material";
+import itemService from "../services/item.service";
 
 const drawerWidth = 240;
 
@@ -29,15 +30,21 @@ const AppBarStyled = styled(MuiAppBar, {
 const NavBar = ({isDrawerOpen, handleDrawerOpen}) => {
     const theme = useTheme()
     const navigate = useNavigate()
-    const {currentUser, login, logOut} = useContext(UserContext)
+    const {currentUser} = useContext(UserContext)
     const [profilePopup, setProfilePopup] = useState(null)
 
     const profileClick = (event) => {
         setProfilePopup(event.currentTarget)
     }
 
-    function iconClicked() {
+    const homeIconClicked = () => {
         navigate("/home")
+    }
+
+    const getMonogram = () => {
+        let first = currentUser.firstname.substring(0, 1).toUpperCase()
+        let last = currentUser.lastname.substring(0, 1).toUpperCase()
+        return `${first}${last}`
     }
 
     return (
@@ -55,23 +62,27 @@ const NavBar = ({isDrawerOpen, handleDrawerOpen}) => {
                         <MenuIcon />
                     </IconButton>
                     }
-                    <ButtonBase sx={{height: 40, marginRight: theme.spacing(2)}} onClick={iconClicked}>
-                        <img alt={"logo img"} src={"/images/aut.png"}/>
+                    <ButtonBase sx={{height: 40, marginRight: theme.spacing(2)}} onClick={homeIconClicked}>
+                        <img alt={"logo img"} src={logo}/>
                     </ButtonBase>
                     <Grid container sx={{flexGrow: 1, alignItems: "center"}}>
-                        <Typography variant="h5" color="inherit" sx={{marginRight: theme.spacing(2)}}>Item registry</Typography>
-                        <Button size="large" color="inherit" component={RouterLink} to="/about" sx={{flexShrink: 0}}>About us</Button>
+                        <Typography variant="h5" color="inherit" sx={{marginRight: theme.spacing(2)}}>Eszköztár</Typography>
+
+                        <Button size="large" color="inherit" component={RouterLink} to="/about" sx={{flexShrink: 0}}>Rólunk</Button>
+
+                        <Button size="large" color="inherit" component={RouterLink} to="/search" sx={{flexShrink: 0}}>Tárgykeresés</Button>
+
                         {currentUser && currentUser.roles.includes("ROLE_MODERATOR") && (<>
                             <Button size="large" color="inherit" component={RouterLink} to="/newItem"
-                                    sx={{flexShrink: 0}}>Add items</Button>
-                            <Button size="large" color="inherit" component={RouterLink} to="/newCategories" sx={{flexShrink: 0}}>Add categories</Button>
+                                    sx={{flexShrink: 0}}>Új tárgy</Button>
+                            <Button size="large" color="inherit" component={RouterLink} to="/newCategories" sx={{flexShrink: 0}}>Új kategória</Button>
                             </>)}
                     </Grid>
                     {!currentUser &&
-                        <Button size="large" color="inherit" component={RouterLink} to="/login" sx={{flexShrink: 0}}>Login</Button>
+                        <Button size="large" color="inherit" component={RouterLink} to="/login" sx={{flexShrink: 0}}>Bejelentkezés</Button>
                     }
                     {!currentUser &&
-                        <Button size="large" color="inherit" component={RouterLink} to="/register" sx={{flexShrink: 0}}>Sign up</Button>
+                        <Button size="large" color="inherit" component={RouterLink} to="/register" sx={{flexShrink: 0}}>Regisztráció</Button>
                     }
                     {currentUser &&
                         <div>
@@ -80,7 +91,10 @@ const NavBar = ({isDrawerOpen, handleDrawerOpen}) => {
                                 onClick={profileClick}
                                 color="inherit"
                             >
-                                <AccountCircle/>
+                                {currentUser.imageUrl &&
+                                    <Avatar alt="" src={`${itemService.imgHeader}${currentUser.imageUrl}`} />}
+                                {!currentUser.imageUrl &&
+                                    <Avatar sx={{bgcolor: 'white', color: 'primary.main'}}>{getMonogram()}</Avatar>}
                             </IconButton>
                             <Popup anchorEl={profilePopup} handleClose={() => {setProfilePopup(null)}}/>
                         </div>

@@ -9,5 +9,5 @@ import java.util.*
 @Repository
 interface RefreshTokenRepository : JpaRepository<RefreshToken, Long> {
     fun findByToken(token: String?): RefreshToken?
-    fun deleteByUser(user: User)
+    fun deleteAllByUser(user: User): Int
 }

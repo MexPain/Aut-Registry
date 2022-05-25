@@ -3,12 +3,14 @@ package hu.bme.aut.registrybackend.entities
 import com.fasterxml.jackson.annotation.JsonIdentityInfo
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.ObjectIdGenerators
+import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import hu.bme.aut.registrybackend.entities.Lending.ItemLending
+import hu.bme.aut.registrybackend.payloads.utils.ILBorrowedItemsSerializer
 import javax.persistence.*
 
 @Entity
 @Table(name = "users")
-@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator::class, property = "id")
+//@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator::class, property = "id")
 class User(
     @Column(nullable = false, unique = true)
     val username: String,
@@ -34,6 +36,7 @@ class User(
         inverseJoinColumns = [JoinColumn(name = "role_id")])
     var roles: Set<Role> = hashSetOf(),
 
+    @JsonSerialize(using = ILBorrowedItemsSerializer::class)
     @OneToMany(mappedBy = "user")
     var borrowedItems: MutableSet<ItemLending> = hashSetOf(),
 

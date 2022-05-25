@@ -40,7 +40,7 @@ class WebSecurityConfig(
             .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
             .authorizeRequests()
-            .antMatchers("/api/auth/signin", "/api/auth/signup", "/api/auth/refreshtoken", "/api/files/*").permitAll()
+            .antMatchers("/api/auth/signin", "/api/auth/signup", "/api/auth/refreshtoken", "/api/files/*", "/api/items/recent").permitAll()
             .anyRequest().authenticated()
         http.addFilterBefore(authenticationJwtTokenFilter, UsernamePasswordAuthenticationFilter::class.java)
     }
@@ -49,10 +49,10 @@ class WebSecurityConfig(
         auth!!.userDetailsService(userDetails).passwordEncoder(passwordEncoder())
     }
 
-    @Bean
-    fun corsConfigurationSource(): CorsConfigurationSource {
-        val source = UrlBasedCorsConfigurationSource()
-        source.registerCorsConfiguration("/**", CorsConfiguration().applyPermitDefaultValues())
-        return source
-    }
+//    @Bean
+//    fun corsConfigurationSource(): CorsConfigurationSource {
+//        val source = UrlBasedCorsConfigurationSource()
+//        source.registerCorsConfiguration("/**", CorsConfiguration().applyPermitDefaultValues())
+//        return source
+//    }
 }

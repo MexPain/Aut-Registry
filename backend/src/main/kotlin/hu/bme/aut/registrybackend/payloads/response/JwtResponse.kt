@@ -7,5 +7,6 @@ data class JwtResponse(
     val lastname: String,
     val email: String,
     val roles: List<String>,
+    val imageUrl: String?,
     val type: String = "Bearer",
 )

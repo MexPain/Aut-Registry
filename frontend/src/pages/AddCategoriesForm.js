@@ -32,14 +32,14 @@ const AddCategoriesForm = () => {
 
     const categoriesValidationSchema = Yup.object().shape({
         name: Yup.string()
-            .required("Name the new category")
+            .required("Adj nevet az új kategóriának")
     })
 
     const subCategoriesValidationSchema = Yup.object().shape({
         name: Yup.string()
-            .required("Name the new subcategory"),
+            .required("Adj nevet az új alkategóriának"),
         parentName: Yup.string()
-            .required("Choose a parent category"),
+            .required("Válaszd ki a szülő kategóriát"),
     })
 
     return (
@@ -53,7 +53,7 @@ const AddCategoriesForm = () => {
                 alignItems: 'center',
             }}>
                 <Typography component="h1" variant="h5">
-                    Add new categories
+                    Új kategória felvétele
                 </Typography>
                 <Grid container>
                     <Grid item xs={6}>
@@ -65,7 +65,7 @@ const AddCategoriesForm = () => {
                             alignItems: 'center',
                         }}>
                             <Typography component="h1" variant="h6">
-                                Category
+                                Kategória
                             </Typography>
                             <Formik
                                 initialValues={{...categoriesInitialValues}}
@@ -87,7 +87,7 @@ const AddCategoriesForm = () => {
                             >{({values, errors, isValid, isSubmitting}) => (
                                 <Form>
                                     <FormTextField
-                                        label="Name*"
+                                        label="Név*"
                                         name="name"
                                         size="small"
                                         sx={{marginBottom: 2}}
@@ -100,7 +100,7 @@ const AddCategoriesForm = () => {
                                         sx={{marginBottom: 2}}
                                         disabled={!isValid || isSubmitting}
                                     >
-                                        {isSubmitting ? <CircularProgress size={24}/> : 'Create category'}
+                                        {isSubmitting ? <CircularProgress size={24}/> : 'Kategória hozzáadása'}
                                     </Button>
 
                                 </Form>
@@ -119,7 +119,7 @@ const AddCategoriesForm = () => {
                             alignItems: 'center',
                         }}>
                             <Typography component="h1" variant="h6">
-                                Subcategory
+                                Alkategória
                             </Typography>
                             <Formik
                                 initialValues={{...subCategoriesInitialValues}}
@@ -142,7 +142,7 @@ const AddCategoriesForm = () => {
                             >{({values, errors, isValid, isSubmitting}) => (
                                 <Form>
                                     <FormTextField
-                                        label="Name*"
+                                        label="Név*"
                                         name="name"
                                         size="small"
                                         sx={{marginBottom: 2}}
@@ -151,7 +151,7 @@ const AddCategoriesForm = () => {
                                     <SelectField
                                         name="parentName"
                                         options={[...parentCategories]}
-                                        label={"Parent name*"}
+                                        label={"Szülő kategória*"}
                                         size="small"
                                         sx={{marginBottom: 2}}
                                     />
@@ -163,7 +163,7 @@ const AddCategoriesForm = () => {
                                         disabled={!isValid || isSubmitting}
                                         sx={{marginBottom: 2}}
                                     >
-                                        {isSubmitting ? <CircularProgress size={24}/> : 'Add subcategory'}
+                                        {isSubmitting ? <CircularProgress size={24}/> : 'Alkategória hozzáadása'}
                                     </Button>
                                 </Form>
                             )}

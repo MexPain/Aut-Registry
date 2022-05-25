@@ -8,8 +8,8 @@ import javax.persistence.*
 @Entity
 @Table(name = "user_item_lending")
 class ItemLending(
-    //@JsonIgnore
-    @ManyToOne
+
+    @OneToOne
     @MapsId("itemId")
     @JoinColumn(name = "item_id")
     val item: Item,
@@ -20,7 +20,12 @@ class ItemLending(
     val user: User,
 
     val lentAt: Date,
-    val deadline: Date,
+
+    @ManyToOne
+    @JoinTable( name = "item_lending_status",
+        joinColumns = [JoinColumn(name = "item_id"), JoinColumn(name = "user_id")],
+        inverseJoinColumns = [JoinColumn(name = "status_id")])
+    var status: Status?,
 
     @EmbeddedId private val id: ItemLendingKey? = null,
 )

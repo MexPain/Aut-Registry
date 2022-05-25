@@ -60,7 +60,7 @@ export function FileUploader({name}) {
     })
 
     useEffect(() => {
-        helpers.setValue(acceptedFiles, true) //ez a formik images arrayt állítja be
+        helpers.setValue(acceptedFiles, true)
         if(acceptedFiles.length === 0) {
             setDisabled(false)
         }
@@ -84,7 +84,7 @@ export function FileUploader({name}) {
         <Grid item xs={12}>
             <DropZoneStyled {...getRootProps({disabled: disabled})}>
                 <input {...getInputProps()} />
-                <p>Drag 'n' drop some files here, or click to select files</p>
+                <p>Húzza ide a fájlt vagy kattintson a tallózáshoz</p>
 
             </DropZoneStyled>
 

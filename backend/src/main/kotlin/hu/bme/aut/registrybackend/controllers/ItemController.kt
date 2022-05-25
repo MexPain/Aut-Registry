@@ -5,7 +5,9 @@ import hu.bme.aut.registrybackend.entities.Item.SubCategory
 import hu.bme.aut.registrybackend.payloads.request.itemRequests.NewCategoryRequest
 import hu.bme.aut.registrybackend.payloads.request.itemRequests.NewItemRequest
 import hu.bme.aut.registrybackend.payloads.request.itemRequests.NewSubCategoryRequest
+import hu.bme.aut.registrybackend.payloads.response.BorrowedItemResponse
 import hu.bme.aut.registrybackend.payloads.response.ErrorMessage
+import hu.bme.aut.registrybackend.payloads.response.ItemResponse
 import hu.bme.aut.registrybackend.payloads.response.MessageResponse
 import hu.bme.aut.registrybackend.repositories.item.CategoryRepository
 import hu.bme.aut.registrybackend.repositories.item.SubCategoryRepository
@@ -40,13 +42,16 @@ class ItemController(
         return ResponseEntity.ok(result)
     }
 
-    @GetMapping("/borrowed")
-    fun getItemsBorrowedByUser(@RequestParam username: String): ResponseEntity<Any> {
-        //TODO
-        return ResponseEntity.badRequest().body("Not yet implemented")
-    }
+    @GetMapping("/available")
+    fun getNonBorrowedItems(): ResponseEntity<List<ItemResponse>> {
+        val result = itemService.findAllNonBorrowedItems()
+        val items: List<ItemResponse> = result.map {
+            ItemResponse(it.id!!, it.name, it.createdAt, it.category.name, it.subCategory.name,
+                "/files/${it.image.id}", it.description, it.borrowedBy)
+        }
 
-    //TODO non borrowed
+        return ResponseEntity.ok().body(items)
+    }
 
     @PostMapping("/add")
     @PreAuthorize("hasRole('ROLE_MODERATOR') or hasRole('ROLE_ADMIN')")
@@ -63,6 +68,63 @@ class ItemController(
                 ServletUriComponentsBuilder.fromCurrentContextPath().toUriString()
             ))
         }
+    }
+
+    @GetMapping("/borrowed/all")
+    @PreAuthorize("hasRole('ROLE_MODERATOR')")
+    fun getAllBorrowedItems(): ResponseEntity<Any> {
+        return try {
+            ResponseEntity.ok(
+                itemService.findAllAcceptedItems()
+            )
+        }catch (e: NoSuchElementException) {
+            ResponseEntity.badRequest().body(ErrorMessage(
+                HttpStatus.BAD_REQUEST.value(),
+                Date(),
+                e.message,
+                ServletUriComponentsBuilder.fromCurrentContextPath().toUriString()
+            ))
+        }
+    }
+
+    @GetMapping("/borrowed/pending")
+    @PreAuthorize("hasRole('ROLE_MODERATOR')")
+    fun getAllPendingItems(): ResponseEntity<List<BorrowedItemResponse>> {
+        return try {
+            ResponseEntity.ok(
+                itemService.findAllPendingItems()
+            )
+        }catch (e: NoSuchElementException) {
+            ResponseEntity.status(204).body(
+                listOf()
+            )
+        }
+    }
+
+    @PutMapping("/status/accept")
+    @PreAuthorize("hasRole('ROLE_MODERATOR')")
+    fun acceptItemLending(@RequestParam id: Long): ResponseEntity<Any> {
+        return try {
+            val result = itemService.acceptItemLending(id)
+            ResponseEntity.ok(result)
+        } catch (e: kotlin.NoSuchElementException) {
+            ResponseEntity.badRequest().body(
+                MessageResponse("Invalid item id")
+            )
+        }
+    }
+
+    @DeleteMapping("/reclaim")
+    @PreAuthorize("hasRole('ROLE_MODERATOR')")
+    fun reclaimItem(@RequestParam id: Long): ResponseEntity<HttpStatus> {
+        itemService.deleteItemLendingByItemId(id)
+        return ResponseEntity(HttpStatus.NO_CONTENT)
+//        return try {
+//            itemService.reclaimItem(id)
+//            ResponseEntity(HttpStatus.NO_CONTENT)
+//        }catch (e: Exception) {
+//            ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR)
+//        }
     }
 
     @GetMapping("/categories")
@@ -106,7 +168,46 @@ class ItemController(
                 "ParentCategory ${subcategory.parentCategory} was not found. Insert abandoned."
             ))
         }
+    }
 
+    @GetMapping("/search")
+    fun searchForItems(@RequestParam text: String?, @RequestParam category: String?): ResponseEntity<Any> {
+        if(text.isNullOrBlank() && category.isNullOrBlank()){
+            val allItems = itemService.findAllNonBorrowedItems().map {
+                ItemResponse(it.id!!, it.name, it.createdAt, it.category.name, it.subCategory.name,
+                    "/files/${it.image.id}", it.description, it.borrowedBy)
+            }
+            return ResponseEntity.ok(allItems)
+        }
+        if(category.isNullOrBlank() && !text.isNullOrBlank()) {
+            val itemsWithText = itemService.searchForAvailableItemsWithNameLike(text).map {
+                ItemResponse(it.id!!, it.name, it.createdAt, it.category.name, it.subCategory.name,
+                    "/files/${it.image.id}", it.description, it.borrowedBy)
+            }
+            return ResponseEntity.ok(itemsWithText)
+        }
+        if(text.isNullOrBlank() && !category.isNullOrBlank()) {
+            val itemsWithCategory = itemService.findAvailableItemsWithCategory(category).map {
+                ItemResponse(it.id!!, it.name, it.createdAt, it.category.name, it.subCategory.name,
+                    "/files/${it.image.id}", it.description, it.borrowedBy)
+            }
+            return ResponseEntity.ok(itemsWithCategory)
+        }
+
+        val itemsWithNameAndCat = itemService.findAvailableItemsWithCategoryAndNameLike(text!!, category!!).map {
+            ItemResponse(it.id!!, it.name, it.createdAt, it.category.name, it.subCategory.name,
+                "/files/${it.image.id}", it.description, it.borrowedBy)
+        }
+        return ResponseEntity.ok(itemsWithNameAndCat)
+    }
+
+    @GetMapping("/recent")
+    fun getRecentItems(@RequestParam num: Int): ResponseEntity<Any> {
+        val items = itemService.getNumberOfRecentItems(num)
+        return ResponseEntity.ok(items.map { ItemResponse(
+            it.id!!, it.name, it.createdAt, it.category.name, it.subCategory.name,
+            "/files/${it.image.id}", it.description, it.borrowedBy
+        ) })
     }
 
 }

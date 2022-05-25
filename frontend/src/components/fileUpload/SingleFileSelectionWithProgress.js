@@ -15,12 +15,11 @@ export function SingleFileSelectionWithProgress({file, onDelete, onUpload}) {
     }));
 
     useEffect(() => {
-        async function upload() {   //TODO handle errors
+        async function upload() {
             const fileResp = await fileUpoladService.upload(file, (event) => {
                 setProgress(Math.round((100 * event.loaded) / event.total));
             })
             onUpload(file, fileResp.data.url)
-            //console.log('resp: ' + JSON.stringify(fileResp.data.url))
         }
 
         upload()

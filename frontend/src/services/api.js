@@ -1,6 +1,7 @@
 import axios from "axios";
 import TokenService from "./token.service";
 import EventBus from "./auth/EventBus";
+import createAuthRefreshInterceptor from 'axios-auth-refresh';
 
 const instance = axios.create({
     baseURL: "http://localhost:8080/api",
@@ -10,41 +11,31 @@ const instance = axios.create({
 })
 
 instance.interceptors.request.use(
-    (config)=> {
+    (config) => {
         const token = TokenService.getLocalAccessToken()
-        if(token) {
+        if (token) {
             config.headers["Authorization"] = 'Bearer ' + token
         }
         return config
     },
-    (error)=>{
+    (error) => {
         return Promise.reject(error)
     }
 )
 
-instance.interceptors.response.use(
-    (res) => {
-        return res
-    },
-    async (err)=> {
-        const originalConfig = err.config
-        if (originalConfig.url !== "/auth/signin" && err.response) {
-            if (err.response.status === 401 && Boolean(TokenService.getUser()) && !originalConfig._retry) {
-                originalConfig._retry = true
-                try {
-                    const rs = await instance.post("/auth/refreshtoken", {
-                        refreshToken: TokenService.getLocalRefreshToken(),
-                    });
-                    const { accessToken } = rs.data;
-                    TokenService.updateLocalAccessToken(accessToken);
-                    return instance(originalConfig);
-                } catch (_error) {
-                    EventBus.dispatch("logout")
-                    return Promise.reject(_error)
-                }
-            }
-        }
-        return Promise.reject(err)
-    }
-)
+const refreshJwtToken = failedRequest =>
+    instance.post("/auth/refreshtoken", {
+        refreshToken: TokenService.getLocalRefreshToken()
+    }).then(resp => {
+        const {token} = resp.data;
+        TokenService.updateLocalAccessToken(token);
+        failedRequest.response.config.headers["Authorization"] = 'Bearer ' + token
+        return Promise.resolve()
+    }).catch((_error) => {
+        EventBus.dispatch("logout")
+        return Promise.reject(_error)
+    })
+
+createAuthRefreshInterceptor(instance, refreshJwtToken)
+
 export default instance;
