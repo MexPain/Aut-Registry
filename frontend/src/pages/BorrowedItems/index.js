@@ -24,14 +24,14 @@ const BorrowedItemsContent = () => {
                 <Paper sx={{padding: 2, margin: 'auto',}}>
                     <Grid container>
                         <Grid item xs={12}>
-                            <h2>Your borrowed items</h2>
+                            <h2>Nálam lévő tárgyak</h2>
                         </Grid>
                         <Grid item xs={12}>
                             <BorrowedItemsTable items={items}/>
                         </Grid>
                         <Grid item mt={3} xs={12} mx={2}>
                             <Link color="secondary" component={RouterLink} to="/home" variant="body2">
-                                Find items for your needs
+                                Találd meg amire szükséged van
                             </Link>
                         </Grid>
 

@@ -77,7 +77,7 @@ export default function LentItemManagement() {
                 <Paper sx={{padding: 2, margin: 'auto',}}>
                     <Grid container>
                         <Grid item xs={12}>
-                            <h2>Pending items</h2>
+                            <h2>Függőben lévő kölcsönzések</h2>
                         </Grid>
                         <Grid item xs={12}>
                             <PendingItemsTable items={pendingItems}
@@ -91,7 +91,7 @@ export default function LentItemManagement() {
                 <Paper sx={{padding: 2, margin: 'auto',}}>
                     <Grid container>
                         <Grid item xs={12}>
-                            <h2>Borrowed items</h2>
+                            <h2>Kikölcsönzött tárgyak</h2>
                         </Grid>
                         <Grid item xs={12}>
                             <LentItemsTable lendings={borrowedItems}

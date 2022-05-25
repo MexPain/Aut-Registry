@@ -29,10 +29,10 @@ export default function ConfirmDialog({isOpen, changeIsOpen, title, message, okC
             </DialogContent>
             <DialogActions>
                 <Button onClick={handleCancelClose} color="primary">
-                    No
+                    Nem
                 </Button>
                 <Button onClick={handleOkClose} color="primary" autoFocus>
-                    Yes
+                    Igen
                 </Button>
             </DialogActions>
         </Dialog>

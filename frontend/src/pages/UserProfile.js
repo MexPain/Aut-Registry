@@ -11,7 +11,6 @@ const UserProfile = () => {
     useEffect(() => {
         userService.getProfileDetails().then(
             (response) => {
-                //console.log(response.data)
                 setUserData(response.data)
             },
             (error) => {
@@ -45,19 +44,19 @@ const UserProfile = () => {
                             <Paper sx={{padding: 2, margin: 'auto',}}>
                                 <Typography mb={2} variant={"h4"}>{userData.username}</Typography>
 
-                                <Typography fontWeight={"bold"} variant={"body1"}>Email address:</Typography>
+                                <Typography fontWeight={"bold"} variant={"body1"}>Email cím:</Typography>
                                 <Typography mb={1} pl={1} variant={"body1"}>{userData.email || '-'}</Typography>
 
-                                <Typography fontWeight={"bold"} variant={"body1"}>Firstname:</Typography>
-                                <Typography mb={1} pl={1} variant={"body1"}>{userData.firstname || '-'}</Typography>
-
-                                <Typography fontWeight={"bold"} variant={"body1"}>Lastname: </Typography>
+                                <Typography fontWeight={"bold"} variant={"body1"}>Vezetéknév: </Typography>
                                 <Typography mb={1} pl={1} variant={"body1"}>{userData.lastname || '-'}</Typography>
 
-                                <Typography fontWeight={"bold"} variant={"body1"}>Phone number:</Typography>
+                                <Typography fontWeight={"bold"} variant={"body1"}>Keresztnév:</Typography>
+                                <Typography mb={1} pl={1} variant={"body1"}>{userData.firstname || '-'}</Typography>
+
+                                <Typography fontWeight={"bold"} variant={"body1"}>Telefonszám:</Typography>
                                 <Typography mb={1} pl={1} variant={"body1"}>{userData.phone || '-'}</Typography>
 
-                                <Typography fontWeight={"bold"} variant={"body1"}>Description: </Typography>
+                                <Typography fontWeight={"bold"} variant={"body1"}>Bemutatkozás: </Typography>
                                 <Typography mb={1} pl={1} variant={"body1"}>{userData.description || '-'}</Typography>
 
                             </Paper>

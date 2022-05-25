@@ -21,7 +21,7 @@ export default function DemoItem({image, name, category, description}) {
                         <Grid container flexDirection={"column"}>
                             <Typography variant={"subtitle1"} color="primary.main">{name}</Typography>
                             <Typography variant="subtitle2" gutterBottom>
-                                Category: {category}
+                                Kategória: {category}
                             </Typography>
                             <Typography variant="body2" color="textSecondary">
                                 {description.length > 100 ? `${description.substring(0, 100)}...` : description}

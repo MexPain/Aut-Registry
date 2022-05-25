@@ -21,12 +21,12 @@ export default function SearchForm({categories, onSubmitForm}) {
         searchText: Yup.string()
             .when("showText", {
                 is: true,
-                then: Yup.string().required("Enter the item's name")
+                then: Yup.string().required("Add meg a tárgy nevét")
             }),
         categorySelect: Yup.string()
             .when("showCategories", {
                 is: true,
-                then: Yup.string().required("Select a category")
+                then: Yup.string().required("Válassz kategóriát")
             })
     })
 
@@ -43,11 +43,11 @@ export default function SearchForm({categories, onSubmitForm}) {
             <Form>
                 <Grid container>
                     <Grid item xs={9}>
-                        <Typography variant={"subtitle1"} sx={{marginBottom: 2, fontWeight: 'bold'}}>Search</Typography>
+                        <Typography variant={"subtitle1"} sx={{marginBottom: 2, fontWeight: 'bold'}}>Keresés</Typography>
 
                         <Grid container spacing={2} marginBottom={1}>
                             <Grid item xs={4}>
-                                <FormControlLabel label="Filter by name" control={
+                                <FormControlLabel label="Szűrés név szerint" control={
                                     <Switch name="showText" onChange={(event) => {
                                         setFilterName(event.target.checked)
                                         setFieldValue(event.target.name, event.target.checked)
@@ -58,13 +58,13 @@ export default function SearchForm({categories, onSubmitForm}) {
                             <Grid item xs={8} md={7} lg={6}>
                                 {filterName && <FormTextField
                                     size="small"
-                                    label="Name of the item..."
+                                    label="A tárgy neve..."
                                     name="searchText"/>}
                             </Grid>
                         </Grid>
                         <Grid container spacing={2} marginBottom={1}>
                             <Grid item xs={4}>
-                                <FormControlLabel label="Filter by category" control={
+                                <FormControlLabel label="Szűrés kategória szerint" control={
                                     <Switch name="showCategories"
                                             onChange={(event) => {
                                                 setFilterCategory(event.target.checked)
@@ -77,7 +77,7 @@ export default function SearchForm({categories, onSubmitForm}) {
                                 {filterCategory && <SelectField
                                     name="categorySelect"
                                     options={[...categories]}
-                                    label="Select category..."
+                                    label="Válassz kategóriát..."
                                     size="small"/>}
                             </Grid>
                         </Grid>

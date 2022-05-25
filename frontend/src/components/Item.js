@@ -26,7 +26,7 @@ const Item = ({id, image, name, category, description}) => {
                                 </Link>
                             </Box>
                             <Typography variant="subtitle2" gutterBottom>
-                                Category: {category}
+                                Kategória: {category}
                             </Typography>
                             <Typography variant="body2" color="textSecondary">
                                 {description.length > 100 ? `${description.substring(0, 100)}...` : description}
@@ -37,7 +37,7 @@ const Item = ({id, image, name, category, description}) => {
                                 variant="outlined"
                                 size={"small"}
                                 component={RouterLink} to={`/items/${id}`}
-                            >Show more
+                            >Részletek
                             </Button>
                         </Grid>
                     </Grid>

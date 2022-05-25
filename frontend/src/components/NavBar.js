@@ -1,22 +1,11 @@
-import {useContext, useEffect, useState} from "react";
+import {useContext, useState} from "react";
 import {Link as RouterLink, useNavigate} from "react-router-dom";
 import {UserContext} from "../contexts/UserContext";
 import Popup from "./Popup";
 import logo from "../assets/aut.png"
-import {
-    AppBar as MuiAppBar,
-    Avatar,
-    Box,
-    Button,
-    ButtonBase,
-    Grid,
-    IconButton,
-    Toolbar,
-    Typography
-} from '@mui/material';
+import {AppBar as MuiAppBar, Avatar, Box, Button, ButtonBase, Grid, IconButton, Toolbar, Typography} from '@mui/material';
 import {styled, useTheme} from "@mui/material/styles";
 import MenuIcon from '@mui/icons-material/Menu';
-import {AccountCircle} from "@mui/icons-material";
 import itemService from "../services/item.service";
 
 const drawerWidth = 240;
@@ -41,7 +30,7 @@ const AppBarStyled = styled(MuiAppBar, {
 const NavBar = ({isDrawerOpen, handleDrawerOpen}) => {
     const theme = useTheme()
     const navigate = useNavigate()
-    const {currentUser, login, logOut} = useContext(UserContext)
+    const {currentUser} = useContext(UserContext)
     const [profilePopup, setProfilePopup] = useState(null)
 
     const profileClick = (event) => {
@@ -77,23 +66,23 @@ const NavBar = ({isDrawerOpen, handleDrawerOpen}) => {
                         <img alt={"logo img"} src={logo}/>
                     </ButtonBase>
                     <Grid container sx={{flexGrow: 1, alignItems: "center"}}>
-                        <Typography variant="h5" color="inherit" sx={{marginRight: theme.spacing(2)}}>Item registry</Typography>
+                        <Typography variant="h5" color="inherit" sx={{marginRight: theme.spacing(2)}}>Eszköztár</Typography>
 
-                        <Button size="large" color="inherit" component={RouterLink} to="/about" sx={{flexShrink: 0}}>About us</Button>
+                        <Button size="large" color="inherit" component={RouterLink} to="/about" sx={{flexShrink: 0}}>Rólunk</Button>
 
-                        <Button size="large" color="inherit" component={RouterLink} to="/search" sx={{flexShrink: 0}}>Find items</Button>
+                        <Button size="large" color="inherit" component={RouterLink} to="/search" sx={{flexShrink: 0}}>Tárgykeresés</Button>
 
                         {currentUser && currentUser.roles.includes("ROLE_MODERATOR") && (<>
                             <Button size="large" color="inherit" component={RouterLink} to="/newItem"
-                                    sx={{flexShrink: 0}}>Add items</Button>
-                            <Button size="large" color="inherit" component={RouterLink} to="/newCategories" sx={{flexShrink: 0}}>Add categories</Button>
+                                    sx={{flexShrink: 0}}>Új tárgy</Button>
+                            <Button size="large" color="inherit" component={RouterLink} to="/newCategories" sx={{flexShrink: 0}}>Új kategória</Button>
                             </>)}
                     </Grid>
                     {!currentUser &&
-                        <Button size="large" color="inherit" component={RouterLink} to="/login" sx={{flexShrink: 0}}>Login</Button>
+                        <Button size="large" color="inherit" component={RouterLink} to="/login" sx={{flexShrink: 0}}>Bejelentkezés</Button>
                     }
                     {!currentUser &&
-                        <Button size="large" color="inherit" component={RouterLink} to="/register" sx={{flexShrink: 0}}>Sign up</Button>
+                        <Button size="large" color="inherit" component={RouterLink} to="/register" sx={{flexShrink: 0}}>Regisztráció</Button>
                     }
                     {currentUser &&
                         <div>
@@ -105,7 +94,7 @@ const NavBar = ({isDrawerOpen, handleDrawerOpen}) => {
                                 {currentUser.imageUrl &&
                                     <Avatar alt="" src={`${itemService.imgHeader}${currentUser.imageUrl}`} />}
                                 {!currentUser.imageUrl &&
-                                    <Avatar sx={{bgcolor: 'info.dark', color: 'white'}}>{getMonogram()}</Avatar>}
+                                    <Avatar sx={{bgcolor: 'white', color: 'primary.main'}}>{getMonogram()}</Avatar>}
                             </IconButton>
                             <Popup anchorEl={profilePopup} handleClose={() => {setProfilePopup(null)}}/>
                         </div>

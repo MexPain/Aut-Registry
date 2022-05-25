@@ -1,12 +1,5 @@
 import * as Yup from "yup";
-import {
-    Button,
-    CircularProgress,
-    Container,
-    Grid,
-    Paper,
-    Typography
-} from "@mui/material";
+import {Button, CircularProgress, Container, Grid, Paper, Typography} from "@mui/material";
 import {useTheme} from "@mui/material/styles";
 import {Formik, Form} from "formik";
 import FormTextField from "../components/FormTextField";
@@ -43,11 +36,11 @@ const NewItemForm = () => {
 
     const validationSchema = Yup.object().shape({
         name: Yup.string()
-            .required("The item must have a name"),
+            .required("A tárgynak nevet kell adni"),
         category: Yup.string()
-            .required("Please select a category"),
+            .required("Válassz egy kategóriát"),
         subCategory: Yup.string()
-            .required("Please select a subcategory"),
+            .required("Válassz egy alkategóriát"),
 
     })
 
@@ -89,7 +82,7 @@ const NewItemForm = () => {
                         <Grid container spacing={2}>
                             <Grid item xs={12}>
                                 <FormTextField
-                                    label="Name*"
+                                    label="Név*"
                                     name="name"
                                     autoFocus
                                 />
@@ -97,14 +90,14 @@ const NewItemForm = () => {
                             <Grid item xs={6}>
                                 <SelectField
                                     name="category"
-                                    label="Category*"
+                                    label="Kategória*"
                                     options={[...categories]}
                                 />
                             </Grid>
                             <Grid item xs={6}>
                                 <SelectField
                                     name="subCategory"
-                                    label="Subcategory*"
+                                    label="Alkategória*"
                                     options={[...subCategories]}
                                 />
                             </Grid>
@@ -114,12 +107,12 @@ const NewItemForm = () => {
                                     multiline={true}
                                     rows={4}
                                     name="description"
-                                    label="Description"
-                                    placeholder="Some useful info about the item..."
+                                    label="Leírás"
+                                    placeholder="Hasznos információk a tárgyról..."
                                 />
                             </Grid>
 
-                            <Typography marginLeft={2} marginTop={2} variant="subtitle1">Upload image pictures</Typography>
+                            <Typography marginLeft={2} marginTop={2} variant="subtitle1">Kép feltöltése</Typography>
                             <Grid container item>
                                 <FileUploader name="images"/>
                             </Grid>
@@ -135,12 +128,12 @@ const NewItemForm = () => {
                                         marginTop: theme.spacing(2),
                                     }}
                                 >
-                                    {isSubmitting ? <CircularProgress size={24}/> : 'Create item'}
+                                    {isSubmitting ? <CircularProgress size={24}/> : 'Tárgy felvétele'}
                                 </Button>
                             </Grid>
 
                             <Grid item xs={12}>
-                                <Typography variant="caption">Fields marked with * are mandatory</Typography>
+                                <Typography variant="caption">A *-al jelölt mezőket kötelező megadni</Typography>
                             </Grid>
                         </Grid>
                     </Form>

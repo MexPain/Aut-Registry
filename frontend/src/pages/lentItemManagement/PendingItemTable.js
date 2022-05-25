@@ -10,6 +10,7 @@ import {
     TableRow,
     Typography
 } from "@mui/material";
+import {dateConverter, statusConverter} from "../../utils/Converters";
 
 const StyledTableCell = styled(TableCell)(({theme}) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -34,16 +35,16 @@ const StyledTableRow = styled(TableRow)(({theme}) => ({
 export default function PendingItemsTable({items, onAcceptedClick, onDeniedClick}) {
 
     return (<>
-        {items.length === 0 && <Typography mt={5} textAlign={"center"} variant={"body1"}>No pending requests at the moment</Typography>}
+        {items.length === 0 && <Typography mt={5} textAlign={"center"} variant={"body1"}>Jelenleg nincs beavatkozásra váró kölcsönzés</Typography>}
         {items.length > 0 && <TableContainer component={Paper}>
             <Table sx={{minWidth: 650}} size="small" aria-label="simple table">
                 <TableHead>
                     <TableRow>
-                        <StyledTableCell>Username</StyledTableCell>
-                        <StyledTableCell>Item name</StyledTableCell>
-                        <StyledTableCell align="center">Borrowed at</StyledTableCell>
-                        <StyledTableCell align="center">Status</StyledTableCell>
-                        <StyledTableCell align="right">Actions</StyledTableCell>
+                        <StyledTableCell>Felhasználó</StyledTableCell>
+                        <StyledTableCell align="center">Tárgynév</StyledTableCell>
+                        <StyledTableCell align="center">Kölcsönzés dátuma</StyledTableCell>
+                        <StyledTableCell align="center">Állapot</StyledTableCell>
+                        <StyledTableCell align="right">Akciók</StyledTableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -53,20 +54,20 @@ export default function PendingItemsTable({items, onAcceptedClick, onDeniedClick
                                 {data.userName}
                             </StyledTableCell>
                             <StyledTableCell align="center">{data.itemName}</StyledTableCell>
-                            <StyledTableCell align="center">{data.lentAt}</StyledTableCell>
-                            <StyledTableCell align="center">{data.status}</StyledTableCell>
+                            <StyledTableCell align="center">{dateConverter(data.lentAt)}</StyledTableCell>
+                            <StyledTableCell align="center">{statusConverter(data.status)}</StyledTableCell>
                             <StyledTableCell align="right">
                                 <Grid container justifyContent={"right"}>
                                     <Grid item>
                                         <Link component="button" variant="body2"
                                               onClick={() => onAcceptedClick(data)}>
-                                            Accept
+                                            Elfogadás
                                         </Link>
                                     </Grid>
                                     <Grid item marginLeft={1}>
                                         <Link component="button" variant="body2"
                                               onClick={() => onDeniedClick(data)}>
-                                            Deny
+                                            Elutasítás
                                         </Link>
                                     </Grid>
                                 </Grid>

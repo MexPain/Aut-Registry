@@ -1,13 +1,5 @@
-import React, {useEffect} from 'react';
-import {
-    Button,
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogContentText,
-    DialogTitle, ToggleButton,
-    ToggleButtonGroup,
-} from "@mui/material";
+import React from 'react';
+import {Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, ToggleButton, ToggleButtonGroup,} from "@mui/material";
 
 export default function RolesFormDialog({isOpen, onClosed, currentRoles, title, message, okCallback, cancelCallback}) {
 
@@ -47,19 +39,19 @@ export default function RolesFormDialog({isOpen, onClosed, currentRoles, title, 
                     aria-label="role changing"
                 >
                     <ToggleButton color={"primary"} value="ROLE_USER" aria-label="user">
-                        Regular user
+                        Normál felhasználó
                     </ToggleButton>
                     <ToggleButton color={"primary"} value="ROLE_MODERATOR" aria-label="mod">
-                        Moderator
+                        Moderátor
                     </ToggleButton>
                     <ToggleButton color={"primary"} value="ROLE_ADMIN" aria-label="admin">
-                        Administrator
+                        Adminisztrátor
                     </ToggleButton>
                 </ToggleButtonGroup>
             </DialogContent>
             <DialogActions>
-                <Button onClick={handleCancelClose}>Cancel</Button>
-                <Button disabled={roles.length === 0} onClick={handleOkClose}>Apply changes</Button>
+                <Button onClick={handleCancelClose}>Mégse</Button>
+                <Button disabled={roles.length === 0} onClick={handleOkClose}>Módosítás</Button>
             </DialogActions>
         </Dialog>
     );

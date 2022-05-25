@@ -21,7 +21,7 @@ export function UserManagement() {
                 setUsers(resp.data)
             })
             .catch(e => {
-                e.response.status === 403 && navigate("/forbidden") //TODO forbidden page, ezt máshol is
+                e.response.status === 403 && navigate("/forbidden")
             })
     }, []);
 
@@ -45,7 +45,7 @@ export function UserManagement() {
                 <Paper sx={{padding: 2, margin: 'auto',}}>
                     <Grid container>
                         <Grid item xs={12}>
-                            <h2>All users</h2>
+                            <h2>Felhasználók</h2>
                         </Grid>
                         <Grid item xs={12}>
                             <UsersTable users={users}
@@ -63,8 +63,8 @@ export function UserManagement() {
                 setIsDeleteDialogVisible(value)
                 setSelectedUser(undefined)
             }}
-            title="Confirm user delete"
-            message="Are you sure you want to delete this user?"
+            title="Felhasználó törlése"
+            message="Biztosan törölni szeretnéd ezt a felhasználót?"
             okCallback={ ()=> {
                 let currentUser = selectedUser
                 userService.deleteUser(selectedUser.id)
@@ -83,9 +83,9 @@ export function UserManagement() {
                 setIsChangeDialogVisible(value)
                 setSelectedUser(undefined)
             }}
-            title="Change roles"
+            title="Jogok változtatása"
             currentRoles={selectedUser.roles}
-            message="Select the roles you want for this user!"
+            message="Válaszd ki a felhasználó jogait!"
             okCallback={ (roles)=> {
                 let currentUser = selectedUser
                 //check if its changed

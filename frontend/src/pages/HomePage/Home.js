@@ -58,16 +58,16 @@ const Home = () => {
                         }}
                     >
                         <Typography component="h1" variant="h4" color="inherit" gutterBottom>
-                            Item registry
+                            Eszköztár
                         </Typography>
                         <Typography variant="h6" color="inherit" paragraph>
-                            Some random description goes here soon...
+                            Minden eszköz egy helyen
                         </Typography>
                     </Box>
                 </Grid>
             </Grid>
         </Paper>
-        <Typography variant={"subtitle1"} fontWeight={"bold"} margin={1}>Recent entries:</Typography>
+        <Typography variant={"subtitle1"} fontWeight={"bold"} margin={1}>Legutóbbi bejegyzések:</Typography>
         { !currentUser && <Grid container spacing={3} justifyContent={"space-around"}>
             {items.map( (item) => (
                 <DemoItem key={item.id} image={`${itemService.imgHeader}${item.images}` || `not-found`} name={item.name}
@@ -82,9 +82,9 @@ const Home = () => {
         </Grid>}
         { !currentUser &&
         <Typography variant={"body1"} marginX={2} marginTop={4}>
-            <Link color="secondary" component={RouterLink} to={`/login`}>Login</Link> or {}
-            <Link color="secondary" component={RouterLink} to={`/register`}>Register</Link> {}
-            to gain access to our database and find what you're looking for</Typography>}
+            <Link color="secondary" component={RouterLink} to={`/login`}>Jelentkezz be</Link> vagy {}
+            <Link color="secondary" component={RouterLink} to={`/register`}>regisztrálj</Link> {}
+            hogy hozzáférhess adatbázisunkhoz és megtaláld amit keresel</Typography>}
     </>);
 }
 export default Home

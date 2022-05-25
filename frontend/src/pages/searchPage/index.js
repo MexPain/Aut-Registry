@@ -36,10 +36,10 @@ export default function SearchPage() {
             </Grid>
 
             <Grid item xs={12} lg={10} mx={"auto"}>
-                {items.length === 0 && !isSearched && <Typography variant={"body2"} marginTop={5} sx={{textAlign: 'center'}}>Search for all available items or try to narrow the results with the filters</Typography>}
+                {items.length === 0 && !isSearched && <Typography variant={"body2"} marginTop={5} sx={{textAlign: 'center'}}>Minden elérhető tárgy mutatása vagy szűrés a fenti opciók szerint</Typography>}
                 {isSearched && <Paper sx={{padding: 2, margin: 'auto',}}>
-                    {items.length === 0 && isSearched && <Typography variant={"subtitle1"} sx={{fontWeight: 'bold', textAlign: 'center'}}>No result</Typography>}
-                    {items.length > 0 && <Typography variant={"subtitle1"} marginX={2} sx={{fontWeight: 'bold'}}>Results:</Typography>}
+                    {items.length === 0 && isSearched && <Typography variant={"subtitle1"} sx={{fontWeight: 'bold', textAlign: 'center'}}>Nincs találat</Typography>}
+                    {items.length > 0 && <Typography variant={"subtitle1"} marginX={2} sx={{fontWeight: 'bold'}}>Találatok:</Typography>}
                     <Grid container spacing={3} justifyContent={"space-around"} marginTop={2}>
                         {items.map( (item) => (
                             <Item key={item.id} id={item.id} image={`${itemService.imgHeader}${item.images}` || `not-found`} name={item.name}

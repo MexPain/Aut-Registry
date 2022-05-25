@@ -1,15 +1,5 @@
 import {styled} from "@mui/material/styles";
-import {
-    Grid, Link,
-    Paper,
-    Table, TableBody,
-    TableCell,
-    tableCellClasses,
-    TableContainer,
-    TableHead,
-    TableRow,
-    Typography
-} from "@mui/material";
+import {Grid, Link, Paper, Table, TableBody, TableCell, tableCellClasses, TableContainer, TableHead, TableRow, Typography} from "@mui/material";
 
 const StyledTableCell = styled(TableCell)(({theme}) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -42,15 +32,15 @@ export default function UsersTable({users, onChangeRoleClick, onDeleteUserClick}
     }
 
     return (<>
-        {!users && <Typography mt={5} textAlign={"center"} variant={"body1"}>No user data available</Typography>}
+        {!users && <Typography mt={5} textAlign={"center"} variant={"body1"}>Nincs megjelenítendő információ</Typography>}
         {users && <TableContainer component={Paper}>
             <Table sx={{minWidth: 650}} size="small" aria-label="simple table">
                 <TableHead>
                     <TableRow>
-                        <StyledTableCell>Username</StyledTableCell>
+                        <StyledTableCell>Felhasználó</StyledTableCell>
                         <StyledTableCell align="center">Email</StyledTableCell>
-                        <StyledTableCell align="center">Roles</StyledTableCell>
-                        <StyledTableCell align="right">Actions</StyledTableCell>
+                        <StyledTableCell align="center">Jogok</StyledTableCell>
+                        <StyledTableCell align="right">Akciók</StyledTableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -66,13 +56,13 @@ export default function UsersTable({users, onChangeRoleClick, onDeleteUserClick}
                                     <Grid item>
                                         <Link component="button" variant="body2"
                                               onClick={() => onChangeRoleClick(user)}>
-                                            Change roles
+                                            Jogok módosítása
                                         </Link>
                                     </Grid>
                                     <Grid item marginLeft={1}>
                                         <Link component="button" variant="body2"
                                               onClick={() => onDeleteUserClick(user)}>
-                                            Delete user
+                                            Felhasználó törlése
                                         </Link>
                                     </Grid>
                                 </Grid>

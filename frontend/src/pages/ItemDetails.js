@@ -32,7 +32,7 @@ export function ItemDetails() {
     const borrowItem = (id) => {
         userService.lendItemToUser(product.id)
             .then((resp) => {
-                setSuccess(`Borrow request successfully sent.`)
+                setSuccess(`Kölcsönzési kérélem elküldve`)
             })
             .catch((e) => {
                 setError(e.response.data.message)
@@ -53,12 +53,12 @@ export function ItemDetails() {
                         <Grid item xs={8}>
                             <Paper sx={{padding: 2, margin: 'auto',}}>
                                 <Typography mb={2} variant={"h4"}>{product.name}</Typography>
-                                <Typography mb={1} variant={"body1"}>Registered at: {product.createdAt}</Typography>
-                                <Typography mb={1} variant={"body1"}>Category: {product.category}</Typography>
-                                <Typography mb={1} variant={"body1"}>Subcategory: {product.subCategory}</Typography>
-                                <Typography mb={1} variant={"body1"}>Description: {product.description}</Typography>
+                                <Typography mb={1} variant={"body1"}>Hozzáadva: {product.createdAt}</Typography>
+                                <Typography mb={1} variant={"body1"}>Kategória: {product.category}</Typography>
+                                <Typography mb={1} variant={"body1"}>Alkategória: {product.subCategory}</Typography>
+                                <Typography mb={1} variant={"body1"}>Leírás: {product.description}</Typography>
                                 <Button sx={{marginTop: 2}} variant={"contained"}
-                                        onClick={() => borrowItem(product.id)}>Borrow this item</Button>
+                                        onClick={() => borrowItem(product.id)}>Tárgy kikölcsönzése</Button>
                             </Paper>
                         </Grid>
                     </Grid>

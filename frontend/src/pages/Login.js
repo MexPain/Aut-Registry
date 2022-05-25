@@ -1,25 +1,12 @@
-import {useContext, useEffect, useRef, useState} from "react";
-import {useNavigate, Routes, Route, useLocation} from "react-router-dom";
+import {useContext, useState} from "react";
+import {useNavigate, useLocation} from "react-router-dom";
 import * as Yup from "yup";
 import {Formik, Form} from "formik";
 import {Link as RouterLink} from 'react-router-dom';
 import {UserContext} from "../contexts/UserContext";
-import {
-    Alert,
-    Avatar,
-    Button,
-    CircularProgress, Collapse,
-    Container,
-    FormControlLabel,
-    Grid, IconButton, Link,
-    Paper,
-    Switch,
-    Typography
-} from "@mui/material";
-import {useTheme} from "@mui/material/styles";
+import {Avatar, Button, CircularProgress, Container, Grid, Link, Paper, Typography} from "@mui/material";
 import {AccountCircle} from "@mui/icons-material";
 import FormTextField from "../components/FormTextField";
-import CloseIcon from '@mui/icons-material/Close';
 import CustomAlert from "../components/CustomAlert";
 
 const Login = () => {
@@ -48,9 +35,9 @@ const Login = () => {
 
     const validationSchema = Yup.object().shape({
         username: Yup.string()
-            .required("Username is required"),
+            .required("Add meg a felhasználóneved"),
         password: Yup.string()
-            .required("Password is required"),
+            .required("Add meg a jelszavad"),
     })
 
     return (
@@ -68,7 +55,7 @@ const Login = () => {
                     <AccountCircle/>
                 </Avatar>
                 <Typography component="h1" variant="h5">
-                    Sign in
+                    Bejelentkezés
                 </Typography>
                 <Formik
                     initialValues={{...initialValues}}
@@ -80,7 +67,7 @@ const Login = () => {
                                 navigate("/home")
                             }, () => {
                                 setSubmitting(false)
-                                setError("Wrong credentials. Please try again.")
+                                setError("Nem egyező felhasználónév és jelszó. Próbálja újra.")
                             })
 
                     }}
@@ -90,7 +77,7 @@ const Login = () => {
                             <Grid item xs={12} marginY={1}>
                                 <FormTextField
                                     name="username"
-                                    label="Username"
+                                    label="Felhasználónév"
                                     autoComplete="username"
                                     autoFocus
                                 />
@@ -98,7 +85,7 @@ const Login = () => {
                             <Grid item xs={12} marginY={1}>
                                 <FormTextField
                                     name="password"
-                                    label="Password"
+                                    label="Jelszó"
                                     type="password"
                                 />
                             </Grid>
@@ -115,18 +102,13 @@ const Login = () => {
                                         marginBottom: 2,
                                     }}
                                 >
-                                    {isSubmitting ? <CircularProgress size={24}/> : 'Sign In'}
+                                    {isSubmitting ? <CircularProgress size={24}/> : 'Belépés'}
                                 </Button>
                             </Grid>
                             <Grid container>
-                                <Grid item xs>
-                                    <Link color="secondary" href="#" variant="body2">
-                                        Forgot password?
-                                    </Link>
-                                </Grid>
                                 <Grid item>
                                     <Link color="secondary" component={RouterLink} to="/register" variant="body2">
-                                        {"Don't have an account? Sign Up"}
+                                        {"Még nincs fiókja? Regisztrációhoz kattintson ide"}
                                     </Link>
                                 </Grid>
                             </Grid>

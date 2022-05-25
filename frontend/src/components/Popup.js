@@ -45,13 +45,13 @@ export default function Popup({anchorEl, handleClose}) {
             }}
         >
             <List disablePadding>
-                <ListItemLink primary="Profile settings" to="/user/profile"
+                <ListItemLink primary="Adataim" to="/user/profile"
                               onClick={ () => {handleClose()}}/>
 
                 <ListItem button onClick={() => {
                     setIsDialogVisible(true)
                 }}>
-                    <ListItemText primary="Log out"/>
+                    <ListItemText primary="Kijelentkezés"/>
                 </ListItem>
             </List>
         </Popover>
@@ -60,8 +60,8 @@ export default function Popup({anchorEl, handleClose}) {
             changeIsOpen={(value) => {
                 setIsDialogVisible(value)
             }}
-            title="Confirm log out"
-            message="Are you sure you want to log out?"
+            title="Kijelentkezés megerősítése"
+            message="Biztosan ki szeretne jelentkezni"
             okCallback={() => {
                 logOut()
                 handleClose()

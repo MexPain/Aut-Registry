@@ -11,6 +11,7 @@ import {
     Typography
 } from "@mui/material";
 import {styled} from "@mui/material/styles";
+import {dateConverter, statusConverter} from "../../utils/Converters";
 
 const StyledTableCell = styled(TableCell)(({theme}) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -35,16 +36,16 @@ const StyledTableRow = styled(TableRow)(({theme}) => ({
 export default function LentItemsTable({lendings, onSendReminderClick, onReclaimClick}) {
 
     return (<>
-        {lendings.length === 0 && <Typography mt={5} textAlign={"center"} variant={"body1"}>No items are borrowed at the moment</Typography>}
+        {lendings.length === 0 && <Typography mt={5} textAlign={"center"} variant={"body1"}>Jelenleg senki sem kölcsönzött ki egy tárgyat sem</Typography>}
         {lendings.length > 0 && <TableContainer component={Paper}>
             <Table sx={{minWidth: 650}} size="small" aria-label="simple table">
                 <TableHead>
                     <TableRow>
-                        <StyledTableCell>Username</StyledTableCell>
-                        <StyledTableCell>Item name</StyledTableCell>
-                        <StyledTableCell align="center">Borrowed at</StyledTableCell>
-                        <StyledTableCell align="center">Status</StyledTableCell>
-                        <StyledTableCell align="right">Actions</StyledTableCell>
+                        <StyledTableCell>Felhasználó</StyledTableCell>
+                        <StyledTableCell align="center">Tárgynév</StyledTableCell>
+                        <StyledTableCell align="center">Kölcsönzés dátuma</StyledTableCell>
+                        <StyledTableCell align="center">Állapot</StyledTableCell>
+                        <StyledTableCell align="right">Akciók</StyledTableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -54,20 +55,14 @@ export default function LentItemsTable({lendings, onSendReminderClick, onReclaim
                                 {item.userName}
                             </StyledTableCell>
                             <StyledTableCell align="center">{item.itemName}</StyledTableCell>
-                            <StyledTableCell align="center">{item.lentAt}</StyledTableCell>
-                            <StyledTableCell align="center">{item.status}</StyledTableCell>
+                            <StyledTableCell align="center">{dateConverter(item.lentAt)}</StyledTableCell>
+                            <StyledTableCell align="center">{statusConverter(item.status)}</StyledTableCell>
                             <StyledTableCell align="right">
                                 <Grid container justifyContent={"right"}>
-                                    <Grid item>
-                                        <Link component="button" variant="body2"
-                                              onClick={() => onSendReminderClick(item)}>
-                                            Send reminder
-                                        </Link>
-                                    </Grid>
                                     <Grid item marginLeft={1}>
                                         <Link component="button" variant="body2"
                                               onClick={() => onReclaimClick(item)}>
-                                            Reclaim
+                                            Visszavétel
                                         </Link>
                                     </Grid>
                                 </Grid>

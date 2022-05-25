@@ -5,10 +5,10 @@ const ErrorPage = () => {
     return (
         <>
             <Typography variant={"h1"} textAlign={"center"} marginTop={10}>404</Typography>
-            <Typography variant={"h2"} textAlign={"center"} fontStyle={"italic"}>Page not found</Typography>
+            <Typography variant={"h2"} textAlign={"center"} fontStyle={"italic"}>Az oldal nem található</Typography>
             <Box display={"flex"} justifyContent={"center"} margin={3}>
                 <Button variant="contained" size="large"
-                        component={RouterLink} to="/">Back to home page</Button>
+                        component={RouterLink} to="/">Vissza a kezdőoldalra</Button>
             </Box>
         </>
     )

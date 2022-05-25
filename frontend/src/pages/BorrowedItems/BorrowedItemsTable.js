@@ -3,7 +3,7 @@ import {
     TableContainer, TableHead, TableRow, Typography
 } from "@mui/material";
 import {styled} from "@mui/material/styles";
-import {Link as RouterLink} from "react-router-dom";
+import {dateConverter, statusConverter} from "../../utils/Converters";
 
 const StyledTableCell = styled(TableCell)(({theme}) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -29,15 +29,14 @@ const BorrowedItemsTable = ({items, onCancelClick}) => {
 
     return (
         <>
-            {!items && <Typography mt={5} textAlign={"center"} variant={"body1"}>You currently do not have any borrowed items</Typography>}
+            {!items && <Typography mt={5} textAlign={"center"} variant={"body1"}>Jelenleg nincs kölcsönzött tárgyad</Typography>}
             {items && <TableContainer component={Paper}>
                 <Table sx={{minWidth: 650}} size="small" aria-label="simple table">
                     <TableHead>
                         <TableRow>
-                            <StyledTableCell>Name</StyledTableCell>
-                            <StyledTableCell align="center">Date of borrow</StyledTableCell>
-                            <StyledTableCell align="center">Status</StyledTableCell>
-                            <StyledTableCell align="right">Actions</StyledTableCell>
+                            <StyledTableCell>Név</StyledTableCell>
+                            <StyledTableCell align="center">Kölcsönzés dátuma</StyledTableCell>
+                            <StyledTableCell align="center">Állapot</StyledTableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -46,18 +45,8 @@ const BorrowedItemsTable = ({items, onCancelClick}) => {
                                 <StyledTableCell component="th" scope="row">
                                     {row.itemName}
                                 </StyledTableCell>
-                                <StyledTableCell align="center">{row.lentAt}</StyledTableCell>
-                                <StyledTableCell align="center">{row.status}</StyledTableCell>
-                                <StyledTableCell align="right">
-                                    <Grid container justifyContent={"right"}>
-                                        <Grid item>
-                                            <Link color="secondary" variant="body2"
-                                                  onClick={() => onCancelClick(row)}>
-                                                Cancel
-                                            </Link>
-                                        </Grid>
-                                    </Grid>
-                                </StyledTableCell>
+                                <StyledTableCell align="center">{dateConverter(row.lentAt)}</StyledTableCell>
+                                <StyledTableCell align="center">{statusConverter(row.status)}</StyledTableCell>
                             </StyledTableRow>
                         ))}
                     </TableBody>
